@@ -19,7 +19,7 @@ namespace VirtoCommerce.Platform.Web.Extensions
             settingsRegistrar.RegisterSettingsForType(UserProfile.AllSettings, typeof(UserProfile).Name);
 
             var settingsManager = appBuilder.ApplicationServices.GetRequiredService<ISettingsManager>();
-            
+
             var sendDiagnosticData = settingsManager.GetValue(Setup.SendDiagnosticData.Name, (bool)Setup.SendDiagnosticData.DefaultValue);
             if (!sendDiagnosticData)
             {
@@ -40,9 +40,12 @@ namespace VirtoCommerce.Platform.Web.Extensions
             using (var serviceScope = appBuilder.ApplicationServices.CreateScope())
             {
                 var moduleManager = serviceScope.ServiceProvider.GetRequiredService<IModuleManager>();
+                Startup.HardLog("GetInstalledModules START");
                 var modules = GetInstalledModules(serviceScope.ServiceProvider);
+                Startup.HardLog("GetInstalledModules FINISH");
                 foreach (var module in modules)
                 {
+                    Startup.HardLog($@"PostInitializeModule {module.ModuleName}");
                     moduleManager.PostInitializeModule(module, appBuilder);
                 }
             }
