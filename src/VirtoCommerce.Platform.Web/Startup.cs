@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
@@ -27,6 +26,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -37,6 +37,7 @@ using VirtoCommerce.Platform.Assets.FileSystem;
 using VirtoCommerce.Platform.Assets.FileSystem.Extensions;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Extensions;
 using VirtoCommerce.Platform.Core.JsonConverters;
 using VirtoCommerce.Platform.Core.Localizations;
 using VirtoCommerce.Platform.Core.Modularity;
@@ -64,16 +65,9 @@ using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace VirtoCommerce.Platform.Web
 {
+
     public class Startup
     {
-        public static DateTime StartedAt = DateTime.Now;
-
-        public static void HardLog(string text)
-        {
-            var msg = $@"-----------------[{DateTime.Now.Subtract(StartedAt)}]-----{text}";
-            System.Diagnostics.Trace.TraceInformation(msg);
-            Console.WriteLine(msg);
-        }
 
         public Startup(IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
         {
@@ -87,7 +81,6 @@ namespace VirtoCommerce.Platform.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            HardLog("ConfigureServices start");
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             // This custom provider allows able to use just [Authorize] instead of having to define [Authorize(AuthenticationSchemes = "Bearer")] above every API controller
             // without this Bearer authorization will not work
@@ -404,13 +397,15 @@ namespace VirtoCommerce.Platform.Web
 
             // Register the Swagger generator
             services.AddSwagger();
-            HardLog("ConfigureServices finish");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            HardLog("Configure 1");
+            //ILogger<ApiErrorWrappingMiddleware> logger
+            var logger = app.ApplicationServices.GetRequiredService<ILogger<LocalStorageModuleCatalog>>();
+
+            logger.HardLog("Configure 1");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -426,15 +421,15 @@ namespace VirtoCommerce.Platform.Web
                 app.UseHsts();
             }
 
-            HardLog("UseMiddleware<ApiErrorWrappingMiddleware>");
+            logger.HardLog("UseMiddleware<ApiErrorWrappingMiddleware>");
             //Return all errors as Json response
             app.UseMiddleware<ApiErrorWrappingMiddleware>();
 
-            HardLog("app.UseForwardedHeaders");
+            logger.HardLog("app.UseForwardedHeaders");
             // Engages the forwarded header support in the pipeline  (see description above)
             app.UseForwardedHeaders();
 
-            HardLog("app.UseHttpsRedirection");
+            logger.HardLog("app.UseHttpsRedirection");
             app.UseHttpsRedirection();
 
             // Add default MimeTypes with additional bindings
@@ -453,7 +448,7 @@ namespace VirtoCommerce.Platform.Web
                 fileExtensionContentTypeProvider.Mappings[binding.Key] = binding.Value;
             }
 
-            HardLog("app.UseStaticFiles");
+            logger.HardLog("app.UseStaticFiles");
             app.UseStaticFiles(new StaticFileOptions
             {
                 ContentTypeProvider = fileExtensionContentTypeProvider
@@ -462,7 +457,7 @@ namespace VirtoCommerce.Platform.Web
             app.UseRouting();
             app.UseCookiePolicy();
 
-            HardLog("app.UseStaticFiles/PhysicalFileProvider");
+            logger.HardLog("app.UseStaticFiles/PhysicalFileProvider");
             //Handle all requests like a $(Platform) and Modules/$({ module.ModuleName }) as static files in correspond folder
             app.UseStaticFiles(new StaticFileOptions()
             {
@@ -470,12 +465,12 @@ namespace VirtoCommerce.Platform.Web
                 RequestPath = new PathString($"/$(Platform)/Scripts")
             });
 
-            HardLog("var localModules");
+            logger.HardLog("var localModules");
             var localModules = app.ApplicationServices.GetRequiredService<ILocalModuleCatalog>().Modules;
             foreach (var module in localModules.OfType<ManifestModuleInfo>())
             {
 
-                HardLog(@$"app.UseStaticFiles for module {module.ModuleName}");
+                logger.HardLog(@$"app.UseStaticFiles for module {module.ModuleName}");
                 app.UseStaticFiles(new StaticFileOptions()
                 {
                     FileProvider = new PhysicalFileProvider(module.FullPhysicalPath),
@@ -483,16 +478,16 @@ namespace VirtoCommerce.Platform.Web
                 });
             }
 
-            HardLog(@$"app.UseDefaultFiles");
+            logger.HardLog(@$"app.UseDefaultFiles");
             app.UseDefaultFiles();
 
-            HardLog(@$"app.UseAuthentication");
+            logger.HardLog(@$"app.UseAuthentication");
             app.UseAuthentication();
 
-            HardLog(@$"app.UseAuthorization");
+            logger.HardLog(@$"app.UseAuthorization");
             app.UseAuthorization();
 
-            HardLog(@$"app.UseEndpoints");
+            logger.HardLog(@$"app.UseEndpoints");
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -501,7 +496,7 @@ namespace VirtoCommerce.Platform.Web
             });
 
 
-            HardLog(@$"Force migrations");
+            logger.HardLog(@$"Force migrations");
             //Force migrations
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
@@ -514,38 +509,38 @@ namespace VirtoCommerce.Platform.Web
                 securityDbContext.Database.Migrate();
             }
 
-            HardLog(@$"app.UseDbTriggers");
+            logger.HardLog(@$"app.UseDbTriggers");
             app.UseDbTriggers();
             //Register platform settings
-            HardLog(@$"app.UsePlatformSettings");
+            logger.HardLog(@$"app.UsePlatformSettings");
             app.UsePlatformSettings();
 
             // Complete hangfire init
-            HardLog(@$"app.UseHangfire");
+            logger.HardLog(@$"app.UseHangfire");
             app.UseHangfire(Configuration);
 
-            HardLog(@$"app.UseModules");
-            app.UseModules();
+            logger.HardLog(@$"app.UseModules");
+            app.UseModules(logger);
 
             //Register platform permissions
-            HardLog(@$"app.UsePlatformPermissions");
+            logger.HardLog(@$"app.UsePlatformPermissions");
             app.UsePlatformPermissions();
 
             //Setup SignalR hub
-            HardLog(@$"Setup SignalR hub");
+            logger.HardLog(@$"Setup SignalR hub");
             app.UseEndpoints(routes =>
             {
                 routes.MapHub<PushNotificationHub>("/pushNotificationHub");
             });
 
             //Seed default users
-            HardLog(@$"app.UseDefaultUsersAsync");
+            logger.HardLog(@$"app.UseDefaultUsersAsync");
             app.UseDefaultUsersAsync().GetAwaiter().GetResult();
 
-            HardLog(@$"app.UseSwagger");
+            logger.HardLog(@$"app.UseSwagger");
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
-            HardLog(@$"STARTED!");
+            logger.HardLog(@$"STARTED!");
         }
     }
 }

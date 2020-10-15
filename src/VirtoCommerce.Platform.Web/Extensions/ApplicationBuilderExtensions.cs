@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using VirtoCommerce.Platform.Core.Extensions;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Web.Licensing;
@@ -35,17 +37,17 @@ namespace VirtoCommerce.Platform.Web.Extensions
             return appBuilder;
         }
 
-        public static IApplicationBuilder UseModules(this IApplicationBuilder appBuilder)
+        public static IApplicationBuilder UseModules(this IApplicationBuilder appBuilder, ILogger logger)
         {
             using (var serviceScope = appBuilder.ApplicationServices.CreateScope())
             {
                 var moduleManager = serviceScope.ServiceProvider.GetRequiredService<IModuleManager>();
-                Startup.HardLog("GetInstalledModules START");
+                logger.HardLog("GetInstalledModules START");
                 var modules = GetInstalledModules(serviceScope.ServiceProvider);
-                Startup.HardLog("GetInstalledModules FINISH");
+                logger.HardLog("GetInstalledModules FINISH");
                 foreach (var module in modules)
                 {
-                    Startup.HardLog($@"PostInitializeModule {module.ModuleName}");
+                    logger.HardLog($@"PostInitializeModule {module.ModuleName}");
                     moduleManager.PostInitializeModule(module, appBuilder);
                 }
             }

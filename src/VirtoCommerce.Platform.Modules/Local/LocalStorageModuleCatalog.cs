@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Extensions;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Modularity.Exceptions;
 using VirtoCommerce.Platform.Modules.AssemblyLoading;
@@ -173,12 +174,14 @@ namespace VirtoCommerce.Platform.Modules
 
         private void CopyAssemblies(string sourceParentPath, string targetDirectoryPath)
         {
+            
             if (sourceParentPath != null)
             {
                 var sourceDirectoryPath = Path.Combine(sourceParentPath, "bin");
 
                 if (Directory.Exists(sourceDirectoryPath))
                 {
+                    _logger.HardLog("CopyAssemblies START");
                     foreach (var sourceFilePath in Directory.EnumerateFiles(sourceDirectoryPath, "*.*", SearchOption.AllDirectories))
                     {
                         // Copy all assembly related files except assemblies that are inlcuded in TPA list
@@ -192,8 +195,9 @@ namespace VirtoCommerce.Platform.Modules
                             CopyFile(sourceFilePath, targetFilePath);
                         }
                     }
+                    _logger.HardLog("CopyAssemblies Finish");
                 }
-            }
+            }            
         }
 
         private void CopyFile(string sourceFilePath, string targetFilePath)
@@ -219,7 +223,9 @@ namespace VirtoCommerce.Platform.Modules
 
                 try
                 {
+                    _logger.HardLog($@"CopyFile Start {sourceFilePath}");
                     File.Copy(sourceFilePath, targetFilePath, true);
+                    _logger.HardLog($@"CopyFile Finish {sourceFilePath}");
                 }
                 catch (IOException)
                 {
