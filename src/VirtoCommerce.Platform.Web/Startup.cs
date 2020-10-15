@@ -70,7 +70,9 @@ namespace VirtoCommerce.Platform.Web
 
         public static void HardLog(string text)
         {
-            Console.WriteLine($@"-----------------[{DateTime.Now.Subtract(StartedAt)}]-----{text}");
+            var msg = $@"-----------------[{DateTime.Now.Subtract(StartedAt)}]-----{text}";
+            System.Diagnostics.Trace.TraceInformation(msg);
+            Console.WriteLine(msg);
         }
 
         public Startup(IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
