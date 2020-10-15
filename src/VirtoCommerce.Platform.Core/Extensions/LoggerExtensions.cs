@@ -9,7 +9,7 @@ namespace VirtoCommerce.Platform.Core.Extensions
 
         public static void HardLog(this ILogger Logger, string text)
         {
-            var msg = $@"-----------------[{DateTime.Now.Subtract(StartedAt)}]-----{text}";
+            var msg = $@"-----------------Thr [{System.Threading.Thread.CurrentThread.ManagedThreadId}] --------------- [{DateTime.Now.Subtract(StartedAt)}]-----{text}";
             Logger.LogInformation(msg);
         }
     }
