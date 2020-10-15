@@ -174,16 +174,17 @@ namespace VirtoCommerce.Platform.Modules
 
         private void CopyAssemblies(string sourceParentPath, string targetDirectoryPath)
         {
-            
+
             if (sourceParentPath != null)
             {
                 var sourceDirectoryPath = Path.Combine(sourceParentPath, "bin");
 
                 if (Directory.Exists(sourceDirectoryPath))
                 {
-                    _logger.HardLog("CopyAssemblies START");
+                    _logger.HardLog($@"CopyAssemblies START Path: {sourceDirectoryPath}");
                     foreach (var sourceFilePath in Directory.EnumerateFiles(sourceDirectoryPath, "*.*", SearchOption.AllDirectories))
                     {
+                        _logger.HardLog($@"Check file: {sourceFilePath}");
                         // Copy all assembly related files except assemblies that are inlcuded in TPA list
                         if (IsAssemblyRelatedFile(sourceFilePath) && !(IsAssemblyFile(sourceFilePath) && TPA.ContainsAssembly(Path.GetFileName(sourceFilePath))))
                         {
@@ -195,9 +196,9 @@ namespace VirtoCommerce.Platform.Modules
                             CopyFile(sourceFilePath, targetFilePath);
                         }
                     }
-                    _logger.HardLog("CopyAssemblies Finish");
+                    _logger.HardLog($@"CopyAssemblies Finish: {sourceDirectoryPath}");
                 }
-            }            
+            }
         }
 
         private void CopyFile(string sourceFilePath, string targetFilePath)

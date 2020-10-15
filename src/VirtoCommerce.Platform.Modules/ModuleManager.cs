@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
+using VirtoCommerce.Platform.Core.Extensions;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Modularity.Exceptions;
 
@@ -87,6 +88,7 @@ namespace VirtoCommerce.Platform.Modules
         /// <param name="moduleName">Name of the module requested for initialization.</param>
         public void LoadModule(string moduleName)
         {
+            _loggerFacade.HardLog(@$"Loading module Start {moduleName}");
             IEnumerable<ModuleInfo> module = this.ModuleCatalog.Modules.Where(m => m.ModuleName == moduleName);
             if (module == null || module.Count() != 1)
             {
@@ -96,6 +98,7 @@ namespace VirtoCommerce.Platform.Modules
             IEnumerable<ModuleInfo> modulesToLoad = this.ModuleCatalog.CompleteListWithDependencies(module);
 
             this.LoadModuleTypes(modulesToLoad);
+            _loggerFacade.HardLog(@$"Loading module Finish {moduleName}");
         }
 
         public void PostInitializeModule(ModuleInfo moduleInfo, IApplicationBuilder applicationBuilder)
