@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using VirtoCommerce.Platform.Core.Common;
@@ -182,7 +183,7 @@ namespace VirtoCommerce.Platform.Modules
                 if (Directory.Exists(sourceDirectoryPath))
                 {
                     _logger.HardLog($@"CopyAssemblies START Path: {sourceDirectoryPath}");
-                    foreach (var sourceFilePath in Directory.EnumerateFiles(sourceDirectoryPath, "*.*", SearchOption.AllDirectories))
+                    Parallel.ForEach(Directory.EnumerateFiles(sourceDirectoryPath, "*.*", SearchOption.AllDirectories), sourceFilePath =>
                     {
                         _logger.HardLog($@"Check file: {sourceFilePath}");
                         // Copy all assembly related files except assemblies that are inlcuded in TPA list
@@ -196,6 +197,7 @@ namespace VirtoCommerce.Platform.Modules
                             CopyFile(sourceFilePath, targetFilePath);
                         }
                     }
+                    );
                     _logger.HardLog($@"CopyAssemblies Finish: {sourceDirectoryPath}");
                 }
             }
