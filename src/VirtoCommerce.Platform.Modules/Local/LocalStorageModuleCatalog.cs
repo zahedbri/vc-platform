@@ -205,6 +205,7 @@ namespace VirtoCommerce.Platform.Modules
 
         private void CopyFile(string sourceFilePath, string targetFilePath)
         {
+            /*
             var sourceFileInfo = new FileInfo(sourceFilePath);
             var targetFileInfo = new FileInfo(targetFilePath);
 
@@ -220,8 +221,9 @@ namespace VirtoCommerce.Platform.Modules
 
             var versionsAreSameButLaterDate = (sourceVersion == targetVersion && targetFileInfo.Exists && sourceFileInfo.Exists && targetFileInfo.LastWriteTimeUtc < sourceFileInfo.LastWriteTimeUtc);
             if (!targetFileInfo.Exists || sourceVersion > targetVersion || versionsAreSameButLaterDate)
-            {
+            {*/
                 var targetDirectoryPath = Path.GetDirectoryName(targetFilePath);
+            
                 Directory.CreateDirectory(targetDirectoryPath);
 
                 try
@@ -234,16 +236,16 @@ namespace VirtoCommerce.Platform.Modules
                 {
                     // VP-3719: Need to catch to avoid possible problem when different instances are trying to update the same file with the same version but different dates in the probing folder.
                     // We should not fail platform sart in that case - just add warning into the log. In case of unability to place newer version - should fail platform start.
-                    if (versionsAreSameButLaterDate)
+                    //if (versionsAreSameButLaterDate)
                     {
                         _logger.LogWarning($"File '{targetFilePath}' was not updated by '{sourceFilePath}' of the same version but later modified date, because probably it was used by another process");
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    //else
+                    //{
+                    //    throw;
+                    //}
                 }
-            }
+            //}
         }
 
         private bool IsAssemblyRelatedFile(string path)
