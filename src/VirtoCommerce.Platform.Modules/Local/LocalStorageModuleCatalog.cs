@@ -55,6 +55,7 @@ namespace VirtoCommerce.Platform.Modules
                         var manifest = pair.Value;
                         var manifestPath = pair.Key;
 
+                        _logger.HardLog(@$"Path.GetDirectoryName {manifestPath}");
                         var modulePath = Path.GetDirectoryName(manifestPath);
 
                         CopyAssemblies(modulePath, _options.ProbingPath);
