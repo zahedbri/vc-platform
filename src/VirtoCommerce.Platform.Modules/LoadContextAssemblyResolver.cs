@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Extensions;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Modularity.Exceptions;
 using VirtoCommerce.Platform.Modules.AssemblyLoading;
@@ -114,7 +115,9 @@ namespace VirtoCommerce.Platform.Modules
                 return _loadedAssemblies[assemblyName.Name];
             }
 
+            _logger.HardLog($@"LoadAssemblyCached LoadAssemblyInternal START {assemblyName}");
             var loadedAssembly = LoadAssemblyInternal(managedLibrary, loadContext);
+            _logger.HardLog($@"LoadAssemblyCached LoadAssemblyInternal Finish {assemblyName}");
             if (loadedAssembly != null)
             {
                 _loadedAssemblies.Add(assemblyName.Name, loadedAssembly);
