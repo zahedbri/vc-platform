@@ -237,13 +237,17 @@ namespace VirtoCommerce.Platform.Modules
         {
             var result = new Dictionary<string, ModuleManifest>();
 
+            _logger.HardLog(@$"GetModuleManifests Directory.Exists {_options.DiscoveryPath}");
             if (Directory.Exists(_options.DiscoveryPath))
             {
+                _logger.HardLog(@$"GetModuleManifests Directory.EnumerateFiles module.manifest"); ;
                 foreach (var manifestFile in Directory.EnumerateFiles(_options.DiscoveryPath, "module.manifest", SearchOption.AllDirectories))
                 {
                     if (!manifestFile.Contains("artifacts"))
                     {
+                        _logger.HardLog(@$"GetModuleManifests  ManifestReader.Read {manifestFile}");
                         var manifest = ManifestReader.Read(manifestFile);
+                        _logger.HardLog(@$"GetModuleManifests result.Add manifest {manifestFile}");
                         result.Add(manifestFile, manifest);
                     }
                 }
@@ -256,15 +260,18 @@ namespace VirtoCommerce.Platform.Modules
 
             if (sourceParentPath != null)
             {
+                _logger.HardLog($@"CopyAssemblies Path.Combine: {sourceParentPath}");
+
                 var sourceDirectoryPath = Path.Combine(sourceParentPath, "bin");
 
+                _logger.HardLog($@"CopyAssemblies Directory.Exists: {sourceDirectoryPath}");
                 if (Directory.Exists(sourceDirectoryPath))
                 {
                     _logger.HardLog($@"CopyAssemblies START Path: {sourceDirectoryPath}");
                     //Parallel.ForEach(Directory.EnumerateFiles(sourceDirectoryPath, "*.*", SearchOption.AllDirectories), sourceFilePath =>
                     foreach (var sourceFilePath in Directory.EnumerateFiles(sourceDirectoryPath, "*.*", SearchOption.AllDirectories))
                     {
-                        _logger.HardLog($@"Check file: {sourceFilePath}");
+                        _logger.HardLog($@"CopyAssemblies Check file IsAssemblyRelatedFile: {sourceFilePath}");
                         // Copy all assembly related files except assemblies that are inlcuded in TPA list
                         if (IsAssemblyRelatedFile(sourceFilePath) && !(IsAssemblyFile(sourceFilePath) && TPA.ContainsAssembly(Path.GetFileName(sourceFilePath))))
                         {
