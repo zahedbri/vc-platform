@@ -100,7 +100,7 @@ namespace VirtoCommerce.Platform.Modules
                     if (!lockFiles.IsNullOrEmpty())
                     {
                         _logger.HardLog("Await for LOCKFILE being cleared...");
-                        System.Threading.Thread.Sleep(5);
+                        System.Threading.Thread.Sleep(5000);
                     }
                 } while (!lockFiles.IsNullOrEmpty());
 
@@ -284,7 +284,7 @@ namespace VirtoCommerce.Platform.Modules
 
         private void CopyFile(string sourceFilePath, string targetFilePath)
         {
-            /*
+
             var sourceFileInfo = new FileInfo(sourceFilePath);
             var targetFileInfo = new FileInfo(targetFilePath);
 
@@ -300,31 +300,31 @@ namespace VirtoCommerce.Platform.Modules
 
             var versionsAreSameButLaterDate = (sourceVersion == targetVersion && targetFileInfo.Exists && sourceFileInfo.Exists && targetFileInfo.LastWriteTimeUtc < sourceFileInfo.LastWriteTimeUtc);
             if (!targetFileInfo.Exists || sourceVersion > targetVersion || versionsAreSameButLaterDate)
-            {*/
-            var targetDirectoryPath = Path.GetDirectoryName(targetFilePath);
-
-            Directory.CreateDirectory(targetDirectoryPath);
-
-            try
             {
-                _logger.HardLog($@"CopyFile Start {sourceFilePath}");
-                File.Copy(sourceFilePath, targetFilePath, true);
-                _logger.HardLog($@"CopyFile Finish {sourceFilePath}");
-            }
-            catch (IOException)
-            {
-                // VP-3719: Need to catch to avoid possible problem when different instances are trying to update the same file with the same version but different dates in the probing folder.
-                // We should not fail platform sart in that case - just add warning into the log. In case of unability to place newer version - should fail platform start.
-                //if (versionsAreSameButLaterDate)
+                var targetDirectoryPath = Path.GetDirectoryName(targetFilePath);
+
+                Directory.CreateDirectory(targetDirectoryPath);
+
+                try
                 {
-                    _logger.LogWarning($"File '{targetFilePath}' was not updated by '{sourceFilePath}' of the same version but later modified date, because probably it was used by another process");
+                    _logger.HardLog($@"CopyFile Start {sourceFilePath}");
+                    File.Copy(sourceFilePath, targetFilePath, true);
+                    _logger.HardLog($@"CopyFile Finish {sourceFilePath}");
                 }
-                //else
-                //{
-                //    throw;
-                //}
+                catch (IOException)
+                {
+                    // VP-3719: Need to catch to avoid possible problem when different instances are trying to update the same file with the same version but different dates in the probing folder.
+                    // We should not fail platform sart in that case - just add warning into the log. In case of unability to place newer version - should fail platform start.
+                    if (versionsAreSameButLaterDate)
+                    {
+                        _logger.LogWarning($"File '{targetFilePath}' was not updated by '{sourceFilePath}' of the same version but later modified date, because probably it was used by another process");
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
             }
-            //}
         }
 
         private bool IsAssemblyRelatedFile(string path)
