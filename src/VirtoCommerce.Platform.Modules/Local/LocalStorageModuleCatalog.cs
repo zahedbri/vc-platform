@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using VirtoCommerce.Platform.Core.Common;
@@ -34,42 +33,121 @@ namespace VirtoCommerce.Platform.Modules
             if (string.IsNullOrEmpty(_options.DiscoveryPath))
                 throw new InvalidOperationException("The DiscoveryPath cannot contain a null value or be empty");
 
-            if (!Directory.Exists(_options.ProbingPath))
-            {
-                Directory.CreateDirectory(_options.ProbingPath);
-            }
+            var lockFileName = Path.Combine(_options.ProbingPath, $@"{Process.GetCurrentProcess().Id}.lock");
+
 
             if (!discoveryPath.EndsWith(PlatformInformation.DirectorySeparator))
                 discoveryPath += PlatformInformation.DirectorySeparator;
 
-            CopyAssemblies(discoveryPath, _options.ProbingPath);
-
-            foreach (var pair in GetModuleManifests())
+            if (!Directory.Exists(_options.ProbingPath))
             {
-                var manifest = pair.Value;
-                var manifestPath = pair.Key;
+                Directory.CreateDirectory(_options.ProbingPath);
+                File.CreateText(lockFileName).Close();
+                _logger.HardLog("LOCKFILE created. Proceed copy.");
 
-                var modulePath = Path.GetDirectoryName(manifestPath);
-
-                CopyAssemblies(modulePath, _options.ProbingPath);
-                var moduleInfo = AbstractTypeFactory<ManifestModuleInfo>.TryCreateInstance();
-                moduleInfo.LoadFromManifest(manifest);
-                moduleInfo.FullPhysicalPath = Path.GetDirectoryName(manifestPath);
-
-                // Modules without assembly file don't need initialization
-                if (string.IsNullOrEmpty(manifest.AssemblyFile))
+                try
                 {
-                    moduleInfo.State = ModuleState.Initialized;
+
+                    CopyAssemblies(discoveryPath, _options.ProbingPath);
+
+                    foreach (var pair in GetModuleManifests())
+                    {
+                        var manifest = pair.Value;
+                        var manifestPath = pair.Key;
+
+                        var modulePath = Path.GetDirectoryName(manifestPath);
+
+                        CopyAssemblies(modulePath, _options.ProbingPath);
+                        var moduleInfo = AbstractTypeFactory<ManifestModuleInfo>.TryCreateInstance();
+                        moduleInfo.LoadFromManifest(manifest);
+                        moduleInfo.FullPhysicalPath = Path.GetDirectoryName(manifestPath);
+
+                        // Modules without assembly file don't need initialization
+                        if (string.IsNullOrEmpty(manifest.AssemblyFile))
+                        {
+                            moduleInfo.State = ModuleState.Initialized;
+                        }
+                        else
+                        {
+                            //Set module assembly physical path for future loading by IModuleTypeLoader instance
+                            moduleInfo.Ref = GetFileAbsoluteUri(_options.ProbingPath, manifest.AssemblyFile);
+                        }
+
+                        moduleInfo.IsInstalled = true;
+                        AddModule(moduleInfo);
+                    }
                 }
-                else
+                finally
                 {
-                    //Set module assembly physical path for future loading by IModuleTypeLoader instance
-                    moduleInfo.Ref = GetFileAbsoluteUri(_options.ProbingPath, manifest.AssemblyFile);
+                    try
+                    {
+                        File.Delete(lockFileName);
+                        _logger.HardLog("LOCKFILE removed");
+                    }
+                    catch
+                    {
+                        _logger.HardLog("Can't remove LOCKFILE");
+                    }
                 }
 
-                moduleInfo.IsInstalled = true;
-                AddModule(moduleInfo);
             }
+            else
+            {
+                string[] lockFiles;
+                do
+                {
+                    lockFiles = Directory.GetFiles(_options.ProbingPath, "*.lock");
+                    if (!lockFiles.IsNullOrEmpty())
+                    {
+                        _logger.HardLog("Await for LOCKFILE being cleared...");
+                        System.Threading.Thread.Sleep(5);
+                    }
+                } while (!lockFiles.IsNullOrEmpty());
+
+                _logger.HardLog("LOCKFILE has gone. Continue loading.");
+                try
+                {
+
+                    foreach (var pair in GetModuleManifests())
+                    {
+                        var manifest = pair.Value;
+                        var manifestPath = pair.Key;
+
+                        var moduleInfo = AbstractTypeFactory<ManifestModuleInfo>.TryCreateInstance();
+                        moduleInfo.LoadFromManifest(manifest);
+                        moduleInfo.FullPhysicalPath = Path.GetDirectoryName(manifestPath);
+
+                        // Modules without assembly file don't need initialization
+                        if (string.IsNullOrEmpty(manifest.AssemblyFile))
+                        {
+                            moduleInfo.State = ModuleState.Initialized;
+                        }
+                        else
+                        {
+                            //Set module assembly physical path for future loading by IModuleTypeLoader instance
+                            moduleInfo.Ref = GetFileAbsoluteUri(_options.ProbingPath, manifest.AssemblyFile);
+                        }
+
+                        moduleInfo.IsInstalled = true;
+                        AddModule(moduleInfo);
+                    }
+                }
+                finally
+                {
+                    try
+                    {
+                        File.Delete(lockFileName);
+                    }
+                    catch
+                    {
+                    }
+                }
+
+            }
+
+
+
+
         }
 
         public override IEnumerable<ModuleInfo> CompleteListWithDependencies(IEnumerable<ModuleInfo> modules)
@@ -183,7 +261,8 @@ namespace VirtoCommerce.Platform.Modules
                 if (Directory.Exists(sourceDirectoryPath))
                 {
                     _logger.HardLog($@"CopyAssemblies START Path: {sourceDirectoryPath}");
-                    Parallel.ForEach(Directory.EnumerateFiles(sourceDirectoryPath, "*.*", SearchOption.AllDirectories), sourceFilePath =>
+                    //Parallel.ForEach(Directory.EnumerateFiles(sourceDirectoryPath, "*.*", SearchOption.AllDirectories), sourceFilePath =>
+                    foreach (var sourceFilePath in Directory.EnumerateFiles(sourceDirectoryPath, "*.*", SearchOption.AllDirectories))
                     {
                         _logger.HardLog($@"Check file: {sourceFilePath}");
                         // Copy all assembly related files except assemblies that are inlcuded in TPA list
@@ -197,7 +276,7 @@ namespace VirtoCommerce.Platform.Modules
                             CopyFile(sourceFilePath, targetFilePath);
                         }
                     }
-                    );
+                    //);
                     _logger.HardLog($@"CopyAssemblies Finish: {sourceDirectoryPath}");
                 }
             }
@@ -222,29 +301,29 @@ namespace VirtoCommerce.Platform.Modules
             var versionsAreSameButLaterDate = (sourceVersion == targetVersion && targetFileInfo.Exists && sourceFileInfo.Exists && targetFileInfo.LastWriteTimeUtc < sourceFileInfo.LastWriteTimeUtc);
             if (!targetFileInfo.Exists || sourceVersion > targetVersion || versionsAreSameButLaterDate)
             {*/
-                var targetDirectoryPath = Path.GetDirectoryName(targetFilePath);
-            
-                Directory.CreateDirectory(targetDirectoryPath);
+            var targetDirectoryPath = Path.GetDirectoryName(targetFilePath);
 
-                try
+            Directory.CreateDirectory(targetDirectoryPath);
+
+            try
+            {
+                _logger.HardLog($@"CopyFile Start {sourceFilePath}");
+                File.Copy(sourceFilePath, targetFilePath, true);
+                _logger.HardLog($@"CopyFile Finish {sourceFilePath}");
+            }
+            catch (IOException)
+            {
+                // VP-3719: Need to catch to avoid possible problem when different instances are trying to update the same file with the same version but different dates in the probing folder.
+                // We should not fail platform sart in that case - just add warning into the log. In case of unability to place newer version - should fail platform start.
+                //if (versionsAreSameButLaterDate)
                 {
-                    _logger.HardLog($@"CopyFile Start {sourceFilePath}");
-                    File.Copy(sourceFilePath, targetFilePath, true);
-                    _logger.HardLog($@"CopyFile Finish {sourceFilePath}");
+                    _logger.LogWarning($"File '{targetFilePath}' was not updated by '{sourceFilePath}' of the same version but later modified date, because probably it was used by another process");
                 }
-                catch (IOException)
-                {
-                    // VP-3719: Need to catch to avoid possible problem when different instances are trying to update the same file with the same version but different dates in the probing folder.
-                    // We should not fail platform sart in that case - just add warning into the log. In case of unability to place newer version - should fail platform start.
-                    //if (versionsAreSameButLaterDate)
-                    {
-                        _logger.LogWarning($"File '{targetFilePath}' was not updated by '{sourceFilePath}' of the same version but later modified date, because probably it was used by another process");
-                    }
-                    //else
-                    //{
-                    //    throw;
-                    //}
-                }
+                //else
+                //{
+                //    throw;
+                //}
+            }
             //}
         }
 
