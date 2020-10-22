@@ -44,13 +44,17 @@ namespace VirtoCommerce.Platform.Modules
                 Directory.CreateDirectory(_options.ProbingPath);
             }
 
+            _logger.HardLog(@$"InnerLoad start, bNeedToCopyAssemblies: {bNeedToCopyAssemblies}");
+
             FileLock fileLock = null;
             var lockFilePath = Path.Combine(_options.ProbingPath, "vc-lock.txt");
 
             if (bNeedToCopyAssemblies)
             {
+                _logger.HardLog("Acquiring FileLock...");
                 fileLock = new FileLock(lockFilePath, TimeSpan.FromMinutes(1));
                 bNeedToCopyAssemblies = fileLock.TryAcquireLock();
+                _logger.HardLog(@$"FileLock acquired, bNeedToCopyAssemblies: {bNeedToCopyAssemblies}");
             }
 
             if (fileLock != null && !bNeedToCopyAssemblies)
@@ -58,9 +62,12 @@ namespace VirtoCommerce.Platform.Modules
                 // Await for another (first) platform instance had finished copy/load modules
                 while (!fileLock.TryAcquireLock())
                 {
+                    _logger.HardLog(@$"Await for another (first) platform instance had finished copy/load modules");
                     Thread.Sleep(2000);
                 }
             }
+
+            _logger.HardLog(@$"Continue loading... bNeedToCopyAssemblies: {bNeedToCopyAssemblies}");
 
             if (!discoveryPath.EndsWith(PlatformInformation.DirectorySeparator))
                 discoveryPath += PlatformInformation.DirectorySeparator;
@@ -105,6 +112,7 @@ namespace VirtoCommerce.Platform.Modules
                 {
                     //Release file system lock	
                     fileLock.ReleaseLock();
+                    _logger.HardLog(@$"FileLock released.");
                 }
             }
         }
