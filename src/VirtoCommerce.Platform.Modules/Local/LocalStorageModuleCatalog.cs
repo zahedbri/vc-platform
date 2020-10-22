@@ -33,122 +33,43 @@ namespace VirtoCommerce.Platform.Modules
             if (string.IsNullOrEmpty(_options.DiscoveryPath))
                 throw new InvalidOperationException("The DiscoveryPath cannot contain a null value or be empty");
 
-            var lockFileName = Path.Combine(_options.ProbingPath, $@"{Process.GetCurrentProcess().Id}.lock");
-
-
             if (!discoveryPath.EndsWith(PlatformInformation.DirectorySeparator))
                 discoveryPath += PlatformInformation.DirectorySeparator;
 
             if (!Directory.Exists(_options.ProbingPath))
             {
                 Directory.CreateDirectory(_options.ProbingPath);
-                File.CreateText(lockFileName).Close();
-                _logger.HardLog("LOCKFILE created. Proceed copy.");
-
-                try
-                {
-
-                    CopyAssemblies(discoveryPath, _options.ProbingPath);
-
-                    foreach (var pair in GetModuleManifests())
-                    {
-                        var manifest = pair.Value;
-                        var manifestPath = pair.Key;
-
-                        _logger.HardLog(@$"Path.GetDirectoryName {manifestPath}");
-                        var modulePath = Path.GetDirectoryName(manifestPath);
-
-                        CopyAssemblies(modulePath, _options.ProbingPath);
-                        var moduleInfo = AbstractTypeFactory<ManifestModuleInfo>.TryCreateInstance();
-                        moduleInfo.LoadFromManifest(manifest);
-                        moduleInfo.FullPhysicalPath = Path.GetDirectoryName(manifestPath);
-
-                        // Modules without assembly file don't need initialization
-                        if (string.IsNullOrEmpty(manifest.AssemblyFile))
-                        {
-                            moduleInfo.State = ModuleState.Initialized;
-                        }
-                        else
-                        {
-                            //Set module assembly physical path for future loading by IModuleTypeLoader instance
-                            moduleInfo.Ref = GetFileAbsoluteUri(_options.ProbingPath, manifest.AssemblyFile);
-                        }
-
-                        moduleInfo.IsInstalled = true;
-                        AddModule(moduleInfo);
-                    }
-                }
-                finally
-                {
-                    try
-                    {
-                        File.Delete(lockFileName);
-                        _logger.HardLog("LOCKFILE removed");
-                    }
-                    catch
-                    {
-                        _logger.HardLog("Can't remove LOCKFILE");
-                    }
-                }
-
             }
-            else
+
+            CopyAssemblies(discoveryPath, _options.ProbingPath);
+
+            foreach (var pair in GetModuleManifests())
             {
-                string[] lockFiles;
-                do
+                var manifest = pair.Value;
+                var manifestPath = pair.Key;
+
+                _logger.HardLog(@$"Path.GetDirectoryName {manifestPath}");
+                var modulePath = Path.GetDirectoryName(manifestPath);
+
+                CopyAssemblies(modulePath, _options.ProbingPath);
+                var moduleInfo = AbstractTypeFactory<ManifestModuleInfo>.TryCreateInstance();
+                moduleInfo.LoadFromManifest(manifest);
+                moduleInfo.FullPhysicalPath = Path.GetDirectoryName(manifestPath);
+
+                // Modules without assembly file don't need initialization
+                if (string.IsNullOrEmpty(manifest.AssemblyFile))
                 {
-                    lockFiles = Directory.GetFiles(_options.ProbingPath, "*.lock");
-                    if (!lockFiles.IsNullOrEmpty())
-                    {
-                        _logger.HardLog("Await for LOCKFILE being cleared...");
-                        System.Threading.Thread.Sleep(5000);
-                    }
-                } while (!lockFiles.IsNullOrEmpty());
-
-                _logger.HardLog("LOCKFILE has gone. Continue loading.");
-                try
-                {
-
-                    foreach (var pair in GetModuleManifests())
-                    {
-                        var manifest = pair.Value;
-                        var manifestPath = pair.Key;
-
-                        var moduleInfo = AbstractTypeFactory<ManifestModuleInfo>.TryCreateInstance();
-                        moduleInfo.LoadFromManifest(manifest);
-                        moduleInfo.FullPhysicalPath = Path.GetDirectoryName(manifestPath);
-
-                        // Modules without assembly file don't need initialization
-                        if (string.IsNullOrEmpty(manifest.AssemblyFile))
-                        {
-                            moduleInfo.State = ModuleState.Initialized;
-                        }
-                        else
-                        {
-                            //Set module assembly physical path for future loading by IModuleTypeLoader instance
-                            moduleInfo.Ref = GetFileAbsoluteUri(_options.ProbingPath, manifest.AssemblyFile);
-                        }
-
-                        moduleInfo.IsInstalled = true;
-                        AddModule(moduleInfo);
-                    }
+                    moduleInfo.State = ModuleState.Initialized;
                 }
-                finally
+                else
                 {
-                    try
-                    {
-                        File.Delete(lockFileName);
-                    }
-                    catch
-                    {
-                    }
+                    //Set module assembly physical path for future loading by IModuleTypeLoader instance
+                    moduleInfo.Ref = GetFileAbsoluteUri(_options.ProbingPath, manifest.AssemblyFile);
                 }
 
+                moduleInfo.IsInstalled = true;
+                AddModule(moduleInfo);
             }
-
-
-
-
         }
 
         public override IEnumerable<ModuleInfo> CompleteListWithDependencies(IEnumerable<ModuleInfo> modules)
