@@ -280,4 +280,4 @@ app_data/
 
 /src/VirtoCommerce.Platform.Web/modules
 # mkdocs output
-/site
+*.db
