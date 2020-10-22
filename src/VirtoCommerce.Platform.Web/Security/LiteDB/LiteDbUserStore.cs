@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 using LiteDB;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Win32.SafeHandles;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
+using VirtoCommerce.Platform.Data.Repositories;
 using VirtoCommerce.Platform.Security.Repositories;
 
 namespace VirtoCommerce.Platform.Web.Security
@@ -30,10 +32,10 @@ namespace VirtoCommerce.Platform.Web.Security
         private readonly ILiteCollection<CancellationToken> _cancellationTokens;
         private readonly ILiteCollection<TUser> _users;
 
-        public LiteDbUserStore(SecurityLiteDbContext dbContext)
+        public LiteDbUserStore(ILiteDbContext dbContext)
         {
-            _users = dbContext.LiteDatabase.GetCollection<TUser>("users");
-            _cancellationTokens = dbContext.LiteDatabase.GetCollection<CancellationToken>("cancellationtokens");
+            _users = dbContext.Database.GetCollection<TUser>("users");
+            _cancellationTokens = dbContext.Database.GetCollection<CancellationToken>("cancellationtokens");
         }
 
         #region IUserStore
@@ -175,7 +177,9 @@ namespace VirtoCommerce.Platform.Web.Security
         public Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user,
            CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            var result = user.Logins?.Select(x => new UserLoginInfo(x.LoginProvider, x.ProviderKey, null)).ToList()
+                ?? new List<UserLoginInfo>();
+            return Task.FromResult<IList<UserLoginInfo>>(result);
         }
 
         public Task<TUser> FindByLoginAsync(string loginProvider, string providerKey,
@@ -585,7 +589,8 @@ namespace VirtoCommerce.Platform.Web.Security
 
         public Task AddToRoleAsync(TUser user, string roleName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            user.Roles.Add(new Role() { Name = roleName });
+            return Task.CompletedTask;
         }
 
         public Task RemoveFromRoleAsync(TUser user, string roleName, CancellationToken cancellationToken)
@@ -595,12 +600,13 @@ namespace VirtoCommerce.Platform.Web.Security
 
         public Task<IList<string>> GetRolesAsync(TUser user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var result = user.Roles.Select(x => x.Name).ToList() as IList<string>;
+            return Task.FromResult(result);
         }
 
         public Task<bool> IsInRoleAsync(TUser user, string roleName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(user.Roles.Any(x => x.Name.EqualsInvariant(roleName)));
         }
 
         public Task<IList<TUser>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)

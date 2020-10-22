@@ -7,6 +7,7 @@ using LiteDB;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Win32.SafeHandles;
 using VirtoCommerce.Platform.Core.Security;
+using VirtoCommerce.Platform.Data.Repositories;
 using VirtoCommerce.Platform.Security.Repositories;
 
 namespace VirtoCommerce.Platform.Web.Security
@@ -17,10 +18,10 @@ namespace VirtoCommerce.Platform.Web.Security
         private readonly ILiteCollection<CancellationToken> _cancellationTokens;
         private readonly ILiteCollection<TRole> _roles;
 
-        public LiteDbRoleStore(SecurityLiteDbContext dbContext)
+        public LiteDbRoleStore(ILiteDbContext dbContext)
         {
-            _roles = dbContext.LiteDatabase.GetCollection<TRole>("roles");
-            _cancellationTokens = dbContext.LiteDatabase.GetCollection<CancellationToken>("cancellationtokens");
+            _roles = dbContext.Database.GetCollection<TRole>("roles");
+            _cancellationTokens = dbContext.Database.GetCollection<CancellationToken>("cancellationtokens");
         }
 
         public virtual IQueryable<TRole> Roles => _roles.FindAll().AsQueryable();

@@ -1,10 +1,11 @@
 using System;
 using LiteDB;
 using Microsoft.Extensions.Configuration;
+using VirtoCommerce.Platform.Data.Repositories;
 
 namespace VirtoCommerce.Platform.Security.Repositories
 {
-    public class SecurityLiteDbContext
+    public class SecurityLiteDbContext : ILiteDbContext
     {
         public LiteDatabase Database { get; }
 
@@ -20,14 +21,12 @@ namespace VirtoCommerce.Platform.Security.Repositories
                 throw new NullReferenceException("No connection string defined in appsettings.json");
             }
 
-            LiteDatabase = new LiteDatabase(connectionString);
+            Database = new LiteDatabase(connectionString);
         }
 
         public SecurityLiteDbContext(LiteDatabase liteDatabase)
         {
-            LiteDatabase = liteDatabase;
+            Database = liteDatabase;
         }
-
-        public LiteDatabase LiteDatabase { get; protected set; }
     }
 }
