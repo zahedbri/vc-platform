@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.Platform.Core
 {
@@ -26,7 +28,7 @@ namespace VirtoCommerce.Platform.Core
 
         //Url for discovery sample data for initial installation
         //e.g. http://virtocommerce.blob.core.windows.net/sample-data
-        [Url]
+        [NullableUrl]
         public string SampleDataUrl { get; set; }
 
         //Default path to store export files 
