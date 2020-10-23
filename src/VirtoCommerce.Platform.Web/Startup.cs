@@ -41,6 +41,7 @@ using VirtoCommerce.Platform.Core.Localizations;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Data.Extensions;
+using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.Platform.Data.Repositories;
 using VirtoCommerce.Platform.Hangfire.Extensions;
 using VirtoCommerce.Platform.Modules;
@@ -137,7 +138,8 @@ namespace VirtoCommerce.Platform.Web
 
             services.AddDbContext<SecurityDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("VirtoCommerce"));
+                //options.UseSqlServer(Configuration.GetConnectionString("VirtoCommerce"));
+                options.UseDatabaseProviderSwitcher(Configuration).SetConnectionName(Configuration, "VirtoCommerce");
                 // Register the entity sets needed by OpenIddict.
                 // Note: use the generic overload if you need
                 // to replace the default OpenIddict entities.
@@ -479,11 +481,11 @@ namespace VirtoCommerce.Platform.Web
             {
                 var platformDbContext = serviceScope.ServiceProvider.GetRequiredService<PlatformDbContext>();
                 platformDbContext.Database.MigrateIfNotApplied(MigrationName.GetUpdateV2MigrationName("Platform"));
-                platformDbContext.Database.Migrate();
+                platformDbContext.Database.MigrateIfRelationalDatabase();
 
                 var securityDbContext = serviceScope.ServiceProvider.GetRequiredService<SecurityDbContext>();
                 securityDbContext.Database.MigrateIfNotApplied(MigrationName.GetUpdateV2MigrationName("Security"));
-                securityDbContext.Database.Migrate();
+                securityDbContext.Database.MigrateIfRelationalDatabase();
             }
 
             app.UseDbTriggers();
