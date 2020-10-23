@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using VirtoCommerce.Platform.Core.Common;
 
@@ -37,9 +38,7 @@ namespace VirtoCommerce.Platform.Data.Extensions
 
         public static bool IsRelationalDatabase(this DatabaseFacade databaseFacade)
         {
-            var dependencies = ((IDatabaseFacadeDependenciesAccessor)databaseFacade).Dependencies;
-
-            return dependencies is IRelationalDatabaseFacadeDependencies;
+            return databaseFacade.GetService<IDatabaseCreator>() is RelationalDatabaseCreator;
         }
 
         /// <summary>
