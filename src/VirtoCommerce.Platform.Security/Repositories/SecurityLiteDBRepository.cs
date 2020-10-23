@@ -1,6 +1,4 @@
 using System.Linq;
-using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.Domain;
 using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.Platform.Data.Repositories;
 using VirtoCommerce.Platform.Security.Model;

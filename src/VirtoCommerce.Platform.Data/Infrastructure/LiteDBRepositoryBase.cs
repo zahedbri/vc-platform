@@ -6,12 +6,13 @@ namespace VirtoCommerce.Platform.Data.Infrastructure
 {
     public class LiteDBRepositoryBase
     {
-        public LiteDBRepositoryBase(ILiteDbContext liteDatabase)
+        public LiteDBRepositoryBase(ILiteDbContext dbContext, IUnitOfWork unitOfWork = null)
         {
-            DbContext = liteDatabase;
+            DbContext = dbContext;
+            UnitOfWork = unitOfWork ?? new LiteDbContextUnitOfWork(dbContext);
         }
 
-        public IUnitOfWork UnitOfWork => throw new System.NotImplementedException();
+        public IUnitOfWork UnitOfWork { get; private set; }
         protected ILiteDbContext DbContext;
 
         public void Add<T>(T item) where T : class
@@ -24,9 +25,15 @@ namespace VirtoCommerce.Platform.Data.Infrastructure
             DbContext.Database.GetCollection<T>().Upsert(item);
         }
 
+        // The bulk of the clean-up code is implemented in Dispose(bool)
         public void Dispose()
         {
-            throw new System.NotImplementedException();
+            //if (DbContext != null)
+            //{
+            //    DbContext.Database.Dispose();
+            //    DbContext = null;
+            //    //UnitOfWork = null;
+            //}
         }
 
         public void Remove<T>(T item) where T : class
