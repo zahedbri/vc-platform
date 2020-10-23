@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.Configuration;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.Platform.Data.Extensions
@@ -13,8 +14,7 @@ namespace VirtoCommerce.Platform.Data.Extensions
         {
             if (databaseFacade.IsRelationalDatabase())
             {
-                var connectionTimeout = databaseFacade.GetDbConnection().ConnectionTimeout;
-                databaseFacade.SetCommandTimeout(connectionTimeout);
+                databaseFacade.SetCommandTimeout();
 
                 var platformMigrator = databaseFacade.GetService<IMigrator>();
                 var appliedMigrations = databaseFacade.GetAppliedMigrations();
@@ -29,6 +29,7 @@ namespace VirtoCommerce.Platform.Data.Extensions
         {
             if (databaseFacade.IsRelationalDatabase())
             {
+                databaseFacade.SetCommandTimeout();
                 databaseFacade.Migrate();
             }
         }
@@ -39,6 +40,20 @@ namespace VirtoCommerce.Platform.Data.Extensions
             var dependencies = ((IDatabaseFacadeDependenciesAccessor)databaseFacade).Dependencies;
 
             return dependencies is IRelationalDatabaseFacadeDependencies;
+        }
+
+        /// <summary>
+        /// Set Command Timeout according to 'CommandTimeout' setting in config
+        /// </summary>
+        /// <param name="databaseFacade"></param>
+        public static void SetCommandTimeout(this DatabaseFacade databaseFacade)
+        {
+            if (databaseFacade.IsRelationalDatabase())
+            {
+                var configuration = databaseFacade.GetService<IConfiguration>();
+                var commandTimeout = configuration.GetValue<int?>("VirtoCommerce:CommandTimeout");
+                databaseFacade.SetCommandTimeout(commandTimeout);
+            }
         }
     }
 }

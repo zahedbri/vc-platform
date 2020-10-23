@@ -1,6 +1,8 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Configuration;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Domain;
 using VirtoCommerce.Platform.Data.Extensions;
@@ -25,11 +27,7 @@ namespace VirtoCommerce.Platform.Data.Infrastructure
 
             UnitOfWork = unitOfWork ?? new DbContextUnitOfWork(dbContext);
 
-            if (dbContext.Database.IsRelationalDatabase())
-            {
-                var connectionTimeout = dbContext.Database.GetDbConnection().ConnectionTimeout;
-                dbContext.Database.SetCommandTimeout(connectionTimeout);
-            }
+            dbContext.Database.SetCommandTimeout();
         }
 
       

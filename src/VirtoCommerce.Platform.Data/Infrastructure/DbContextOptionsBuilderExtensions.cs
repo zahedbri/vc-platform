@@ -22,7 +22,7 @@ namespace VirtoCommerce.Platform.Data.Infrastructure
 
 
         /// <summary>
-        /// Switch to Database Provider depends on DatabaseProvider setting
+        /// Switch to Database Provider according to 'DatabaseProvider' setting in config
         /// And set connection string 'VirtoCommerce' by default
         /// </summary>
         /// <param name="optionsBuilder"></param>
