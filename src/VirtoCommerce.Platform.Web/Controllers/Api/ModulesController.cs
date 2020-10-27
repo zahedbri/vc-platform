@@ -286,7 +286,9 @@ namespace VirtoCommerce.Platform.Web.Controllers.Api
                 Finished = DateTime.UtcNow
             };
 
-            _logger.LogInformation($"XAPI: ModulesAutoInstalled = {_settingsManager.GetValue(PlatformConstants.Settings.Setup.ModulesAutoInstalled.Name, false)}");
+            _logger.LogWarning($"=============XAPI=======================");
+            _logger.LogWarning($"XAPI: ModulesAutoInstalled = {_settingsManager.GetValue(PlatformConstants.Settings.Setup.ModulesAutoInstalled.Name, false)}");
+            _logger.LogWarning($"=============XAPI=======================");
             if (!_settingsManager.GetValue(PlatformConstants.Settings.Setup.ModulesAutoInstalled.Name, false))
             {
                 lock (_lockObject)
@@ -296,7 +298,9 @@ namespace VirtoCommerce.Platform.Web.Controllers.Api
                         var moduleBundles = _externalModuleCatalogOptions.AutoInstallModuleBundles;
                         if (!moduleBundles.IsNullOrEmpty())
                         {
-                            _logger.LogInformation($"XAPI: moduleBundles = {string.Join(' ', moduleBundles)}");
+                            _logger.LogWarning($"=============XAPI=======================");
+                            _logger.LogWarning($"XAPI: moduleBundles = {string.Join(' ', moduleBundles)}");
+                            _logger.LogWarning($"=============XAPI=======================");
                             _settingsManager.SetValue(PlatformConstants.Settings.Setup.ModulesAutoInstalled.Name, true);
                             _settingsManager.SetValue(PlatformConstants.Settings.Setup.ModulesAutoInstallState.Name, AutoInstallState.Processing);
 
@@ -329,7 +333,9 @@ namespace VirtoCommerce.Platform.Web.Controllers.Api
                                 .Select(x => new ModuleDescriptor(x))
                                 .ToArray();
 
-                            _logger.LogInformation($"XAPI: modulesWithDependencies = {string.Join(' ', modulesWithDependencies.Select(x => x.Id))}");
+                            _logger.LogWarning($"=============XAPI=======================");
+                            _logger.LogWarning($"XAPI: modulesWithDependencies = {string.Join(' ', modulesWithDependencies.Select(x => x.Id))}");
+                            _logger.LogWarning($"=============XAPI=======================");
 
                             if (modulesWithDependencies.Any())
                             {
