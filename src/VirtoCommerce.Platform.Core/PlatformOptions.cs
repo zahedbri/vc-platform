@@ -28,7 +28,7 @@ namespace VirtoCommerce.Platform.Core
 
         //Url for discovery sample data for initial installation
         //e.g. http://virtocommerce.blob.core.windows.net/sample-data
-        [NullableUrl]
+        [Url]
         public string SampleDataUrl { get; set; }
 
         //Default path to store export files 
