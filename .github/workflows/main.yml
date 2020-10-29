@@ -87,7 +87,7 @@ jobs:
         dockerFiles: "https://raw.githubusercontent.com/VirtoCommerce/vc-docker/master/linux/platform/Dockerfile;https://raw.githubusercontent.com/VirtoCommerce/vc-docker/master/linux/platform/wait-for-it.sh"
 
     - name: Docker Login
-      if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dev' }}
+      if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-dockerenv' }}
       uses: azure/docker-login@v1
       with:
         login-server: docker.pkg.github.com
