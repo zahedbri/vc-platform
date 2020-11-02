@@ -359,13 +359,7 @@ namespace VirtoCommerce.Platform.Web
             // Default password validation service implementation
             services.AddScoped<IPasswordCheckService, PasswordCheckService>();
 
-            services.AddOptions<LocalStorageModuleCatalogOptions>().Bind(Configuration.GetSection("VirtoCommerce"))
-                    .PostConfigure(options =>
-                     {
-                         options.DiscoveryPath = Path.GetFullPath(options.DiscoveryPath ?? "modules");
-                     })
-                    .ValidateDataAnnotations();
-            services.AddModules(mvcBuilder);
+            services.AddModules(Configuration, WebHostEnvironment.IsDevelopment(), x => mvcBuilder.AddApplicationPart(x));
 
             services.AddOptions<ExternalModuleCatalogOptions>().Bind(Configuration.GetSection("ExternalModules")).ValidateDataAnnotations();
             services.AddExternalModules();

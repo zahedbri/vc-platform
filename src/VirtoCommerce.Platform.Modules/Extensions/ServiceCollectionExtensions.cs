@@ -1,28 +1,33 @@
 using System;
+using System.IO;
 using System.Linq;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Modules.External;
-using VirtoCommerce.Platform.Web.Infrastructure;
 
 namespace VirtoCommerce.Platform.Modules
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddModules(this IServiceCollection services, IMvcBuilder mvcBuilder, Action<LocalStorageModuleCatalogOptions> setupAction = null)
+        public static IServiceCollection AddModules(this IServiceCollection services, IConfiguration configuration, bool isDevelopment, Action<Assembly> registerApiControllers = null, Action<LocalStorageModuleCatalogOptions> setupAction = null)
         {
+            services.AddOptions<LocalStorageModuleCatalogOptions>().Bind(configuration.GetSection("VirtoCommerce"))
+                    .PostConfigure(options =>
+                    {
+                        options.DiscoveryPath = Path.GetFullPath(options.DiscoveryPath ?? "modules");
+                    })
+                    .ValidateDataAnnotations();
+
             services.AddSingleton(services);
 
             services.AddSingleton<IModuleInitializer, ModuleInitializer>();
             // Cannot inject IHostingEnvironment to LoadContextAssemblyResolver as IsDevelopment() is an extension method (means static) and cannot be mocked by Moq in tests
             services.AddSingleton<IAssemblyResolver, LoadContextAssemblyResolver>(provider =>
-                new LoadContextAssemblyResolver(provider.GetService<ILogger<LoadContextAssemblyResolver>>(), provider.GetService<IWebHostEnvironment>().IsDevelopment()));
+                new LoadContextAssemblyResolver(provider.GetService<ILogger<LoadContextAssemblyResolver>>(), isDevelopment));
             services.AddSingleton<IModuleManager, ModuleManager>();
             services.AddSingleton<ILocalModuleCatalog, LocalStorageModuleCatalog>();
             services.AddSingleton<IModuleCatalog>(provider => provider.GetService<ILocalModuleCatalog>());
@@ -46,7 +51,7 @@ namespace VirtoCommerce.Platform.Modules
                 if (module.Assembly != null && module.Errors.IsNullOrEmpty())
                 {
                     // Register API controller from modules
-                    mvcBuilder.AddApplicationPart(module.Assembly);
+                    registerApiControllers?.Invoke(module.Assembly);
                 }
             }
 
@@ -69,5 +74,7 @@ namespace VirtoCommerce.Platform.Modules
 
             return services;
         }
+
+
     }
 }
