@@ -53,9 +53,9 @@ namespace VirtoCommerce.Platform.Data.Localizations
             var result = new JObject();
             foreach (var file in files)
             {
-                if (File.Exists(file))
+                if (System.IO.File.Exists(file))
                 {
-                    var part = JObject.Parse(File.ReadAllText(file));
+                    var part = JObject.Parse(System.IO.File.ReadAllText(file));
                     result.Merge(part, new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Merge });
                 }
             }

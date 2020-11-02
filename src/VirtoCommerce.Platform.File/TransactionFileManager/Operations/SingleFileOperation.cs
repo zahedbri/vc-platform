@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using VirtoCommerce.Platform.Core.TransactionFileManager;
 
-namespace VirtoCommerce.Platform.Data.TransactionFileManager.Operations
+namespace VirtoCommerce.Platform.File.Operations
 {
     /// <summary>
     /// Class that contains common code for those rollbackable file operations which need
@@ -39,13 +39,13 @@ namespace VirtoCommerce.Platform.Data.TransactionFileManager.Operations
                 {
                     Directory.CreateDirectory(directory);
                 }
-                File.Copy(backupPath, path, true);
+                System.IO.File.Copy(backupPath, path, true);
             }
             else
             {
-                if (File.Exists(path))
+                if (System.IO.File.Exists(path))
                 {
-                    File.Delete(path);
+                    System.IO.File.Delete(path);
                 }
             }
         }
@@ -73,7 +73,7 @@ namespace VirtoCommerce.Platform.Data.TransactionFileManager.Operations
                     {
                         fi.Attributes = FileAttributes.Normal;
                     }
-                    File.Delete(backupPath);
+                    System.IO.File.Delete(backupPath);
                 }
 
                 disposed = true;

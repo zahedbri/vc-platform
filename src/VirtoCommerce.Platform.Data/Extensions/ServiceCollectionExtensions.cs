@@ -18,7 +18,7 @@ using VirtoCommerce.Platform.Data.ExportImport;
 using VirtoCommerce.Platform.Data.Localizations;
 using VirtoCommerce.Platform.Data.Repositories;
 using VirtoCommerce.Platform.Data.Settings;
-using VirtoCommerce.Platform.Data.ZipFile;
+using VirtoCommerce.Platform.File;
 
 namespace VirtoCommerce.Platform.Data.Extensions
 {
@@ -46,7 +46,7 @@ namespace VirtoCommerce.Platform.Data.Extensions
             services.AddCaching(configuration);
 
             services.AddScoped<IPlatformExportImportManager, PlatformExportImportManager>();
-            services.AddSingleton<ITransactionFileManager, TransactionFileManager.TransactionFileManager>();
+            services.AddSingleton<ITransactionFileManager, TransactionFileManager>();
 
             services.AddTransient<IEmailSender, DefaultEmailSender>();
 

@@ -34,33 +34,6 @@ namespace VirtoCommerce.Platform.Web.Extensions
 
             return appBuilder;
         }
-
-        public static IApplicationBuilder UseModules(this IApplicationBuilder appBuilder)
-        {
-            using (var serviceScope = appBuilder.ApplicationServices.CreateScope())
-            {
-                var moduleManager = serviceScope.ServiceProvider.GetRequiredService<IModuleManager>();
-                var modules = GetInstalledModules(serviceScope.ServiceProvider);
-                foreach (var module in modules)
-                {
-                    moduleManager.PostInitializeModule(module, appBuilder);
-                }
-            }
-            return appBuilder;
-        }
-
-        private static IEnumerable<ManifestModuleInfo> GetInstalledModules(IServiceProvider serviceProvider)
-        {
-            var moduleCatalog = serviceProvider.GetRequiredService<ILocalModuleCatalog>();
-            var allModules = moduleCatalog.Modules.OfType<ManifestModuleInfo>()
-                                          .Where(x => x.State == ModuleState.Initialized && !x.Errors.Any())
-                                          .ToArray();
-
-            return moduleCatalog.CompleteListWithDependencies(allModules)
-                .OfType<ManifestModuleInfo>()
-                .Where(x => x.State == ModuleState.Initialized && !x.Errors.Any())
-                .ToArray();
-        }
     }
 
 }

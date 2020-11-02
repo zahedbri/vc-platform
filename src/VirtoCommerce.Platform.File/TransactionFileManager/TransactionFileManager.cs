@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Transactions;
 using VirtoCommerce.Platform.Core.TransactionFileManager;
-using VirtoCommerce.Platform.Data.TransactionFileManager.Operations;
+using VirtoCommerce.Platform.File.Operations;
 
-namespace VirtoCommerce.Platform.Data.TransactionFileManager
+namespace VirtoCommerce.Platform.File
 {
     /// <summary>
     /// port from https://github.com/rsevil/Transactions
@@ -34,7 +34,7 @@ namespace VirtoCommerce.Platform.Data.TransactionFileManager
         /// <param name="path"></param>
         public void Delete(string path)
         {
-            FileAttributes attributes = File.GetAttributes(path);
+            FileAttributes attributes = System.IO.File.GetAttributes(path);
 
             if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
             {
@@ -48,7 +48,7 @@ namespace VirtoCommerce.Platform.Data.TransactionFileManager
                 if (IsInTransaction())
                     EnlistOperation(new DeleteFile(path));
                 else
-                    File.Delete(path);
+                    System.IO.File.Delete(path);
             }
         }
 

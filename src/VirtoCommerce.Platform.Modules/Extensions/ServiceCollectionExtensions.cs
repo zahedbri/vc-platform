@@ -56,6 +56,10 @@ namespace VirtoCommerce.Platform.Modules
             }
 
             services.AddSingleton(moduleCatalog);
+
+            services.AddOptions<ExternalModuleCatalogOptions>().Bind(configuration.GetSection("ExternalModules")).ValidateDataAnnotations();
+            services.AddExternalModules();
+
             return services;
         }
 

@@ -276,8 +276,17 @@ app_data/
 /src/VirtoCommerce.Platform.Web/wwwroot/assets
 /src/VirtoCommerce.Platform.Web/wwwroot/dist
 
+/src/VirtoCommerce.Platform.App/wwwroot/modules
+/src/VirtoCommerce.Platform.App/wwwroot/lib
+/src/VirtoCommerce.Platform.App/wwwroot/app_data
+/src/VirtoCommerce.Platform.App/wwwroot/maps
+/src/VirtoCommerce.Platform.App/wwwroot/cms-content
+/src/VirtoCommerce.Platform.App/wwwroot/assets
+/src/VirtoCommerce.Platform.App/wwwroot/dist
+
 .vscode
 
 /src/VirtoCommerce.Platform.Web/modules
+/src/VirtoCommerce.Platform.App/modules
 # mkdocs output
 /site

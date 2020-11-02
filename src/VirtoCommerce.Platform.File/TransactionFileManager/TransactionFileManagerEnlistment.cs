@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Transactions;
 using VirtoCommerce.Platform.Core.TransactionFileManager;
 
-namespace VirtoCommerce.Platform.Data.TransactionFileManager
+namespace VirtoCommerce.Platform.File
 {
     sealed class TransactionFileManagerEnlistment : IEnlistmentNotification
     {

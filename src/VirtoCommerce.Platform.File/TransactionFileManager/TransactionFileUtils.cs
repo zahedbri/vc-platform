@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace VirtoCommerce.Platform.Data.TransactionFileManager
+namespace VirtoCommerce.Platform.File
 {
     static class TransactionFileUtils
     {

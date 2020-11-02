@@ -44,6 +44,7 @@ using VirtoCommerce.Platform.Data.Extensions;
 using VirtoCommerce.Platform.Data.Repositories;
 using VirtoCommerce.Platform.Hangfire.Extensions;
 using VirtoCommerce.Platform.Modules;
+using VirtoCommerce.Platform.Modules.Extensions;
 using VirtoCommerce.Platform.Security.Authorization;
 using VirtoCommerce.Platform.Security.Repositories;
 using VirtoCommerce.Platform.Security.Services;
@@ -310,7 +311,7 @@ namespace VirtoCommerce.Platform.Web
                     // encrypted format, the following lines are required:
                     options.UseJsonWebTokens();
 
-                    var bytes = File.ReadAllBytes(Configuration["Auth:PrivateKeyPath"]);
+                    var bytes = System.IO.File.ReadAllBytes(Configuration["Auth:PrivateKeyPath"]);
                     X509Certificate2 privateKey;
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                     {
@@ -360,9 +361,6 @@ namespace VirtoCommerce.Platform.Web
             services.AddScoped<IPasswordCheckService, PasswordCheckService>();
 
             services.AddModules(Configuration, WebHostEnvironment.IsDevelopment(), x => mvcBuilder.AddApplicationPart(x));
-
-            services.AddOptions<ExternalModuleCatalogOptions>().Bind(Configuration.GetSection("ExternalModules")).ValidateDataAnnotations();
-            services.AddExternalModules();
 
             //Assets
             var assetsProvider = Configuration.GetSection("Assets:Provider").Value;

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO;
+using System.IO.Abstractions;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,9 +9,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VirtoCommerce.Platform.Core;
+using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.Modularity;
+using VirtoCommerce.Platform.Core.TransactionFileManager;
+using VirtoCommerce.Platform.Core.ZipFile;
+using VirtoCommerce.Platform.File;
 using VirtoCommerce.Platform.Modules;
+using VirtoCommerce.Platform.Modules.Extensions;
 
 namespace VirtoCommerce.Platform.App
 {
@@ -32,7 +39,17 @@ namespace VirtoCommerce.Platform.App
 
             services.AddOptions<PlatformOptions>().Bind(Configuration.GetSection("VirtoCommerce")).ValidateDataAnnotations();
             var mvcBuilder = services.AddMvc();
-            
+
+            //Events
+            var inProcessBus = new InProcessBus();
+            services.AddSingleton<IHandlerRegistrar>(inProcessBus);
+            services.AddSingleton<IEventPublisher>(inProcessBus);
+
+            //TODO File services
+            services.AddSingleton<ITransactionFileManager, TransactionFileManager>();
+            services.AddSingleton<IFileSystem, FileSystem>();
+            services.AddTransient<IZipFileWrapper, ZipFileWrapper>();
+
             services.AddModules(Configuration, WebHostEnvironment.IsDevelopment(), x => mvcBuilder.AddApplicationPart(x));
         }
 
@@ -52,6 +69,8 @@ namespace VirtoCommerce.Platform.App
                     await context.Response.WriteAsync($"Version of the Platform is {PlatformVersion.CurrentVersion}");
                 });
             });
+
+            app.UseModules();
         }
     }
 }
