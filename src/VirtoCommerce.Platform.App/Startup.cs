@@ -1,6 +1,5 @@
 using System.Diagnostics;
-using System.IO;
-using System.IO.Abstractions;
+using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,9 +11,6 @@ using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
-using VirtoCommerce.Platform.Core.Modularity;
-using VirtoCommerce.Platform.Core.TransactionFileManager;
-using VirtoCommerce.Platform.Core.ZipFile;
 using VirtoCommerce.Platform.File;
 using VirtoCommerce.Platform.Modules;
 using VirtoCommerce.Platform.Modules.Extensions;
@@ -41,14 +37,11 @@ namespace VirtoCommerce.Platform.App
             var mvcBuilder = services.AddMvc();
 
             //Events
-            var inProcessBus = new InProcessBus();
-            services.AddSingleton<IHandlerRegistrar>(inProcessBus);
-            services.AddSingleton<IEventPublisher>(inProcessBus);
+            //var inProcessBus = new InProcessBus();
+            //services.AddSingleton<IHandlerRegistrar>(inProcessBus);
+            //services.AddSingleton<IEventPublisher>(inProcessBus);
 
-            //TODO File services
-            services.AddSingleton<ITransactionFileManager, TransactionFileManager>();
-            services.AddSingleton<IFileSystem, FileSystem>();
-            services.AddTransient<IZipFileWrapper, ZipFileWrapper>();
+            services.AddFileServices();
 
             services.AddModules(Configuration, WebHostEnvironment.IsDevelopment(), x => mvcBuilder.AddApplicationPart(x));
         }
@@ -64,6 +57,10 @@ namespace VirtoCommerce.Platform.App
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+
                 endpoints.MapGet("/", async context =>
                 {
                     await context.Response.WriteAsync($"Version of the Platform is {PlatformVersion.CurrentVersion}");

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<module>
+    <id>VirtoCommerce.Security</id>
+    <version>1.0.0</version>
+    <version-tag>v1</version-tag>
+    <platformVersion>3.0.0</platformVersion>
+    <dependencies></dependencies>
+
+    <title>Security module</title>
+    <description></description>
+    <authors>
+        <author>Andrei Kostyrin</author>
+    </authors>
+    <owners>
+        <owner>Virto Commerce</owner>
+    </owners>
+    <groups>
+        <group></group>
+    </groups>
+    <projectUrl></projectUrl>
+    <iconUrl></iconUrl>
+    <releaseNotes>First version.</releaseNotes>
+    <copyright>Copyright © 2011-2020 Virto Commerce. All rights reserved</copyright>
+    <tags></tags>
+
+    <assemblyFile>VirtoCommerce.SecurityModule.Web.dll</assemblyFile>
+    <moduleType>VirtoCommerce.SecurityModule.Web.Module, VirtoCommerce.SecurityModule.Web</moduleType>
+</module>

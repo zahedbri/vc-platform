@@ -17,6 +17,9 @@
     <ProjectReference Include="..\VirtoCommerce.Platform.Modules\VirtoCommerce.Platform.Modules.csproj" />
   </ItemGroup>
 
-    
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.8" />
+        <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
+    </ItemGroup>  
 
 </Project>
