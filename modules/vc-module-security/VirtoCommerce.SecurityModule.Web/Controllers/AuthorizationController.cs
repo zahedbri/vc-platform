@@ -31,18 +31,18 @@ namespace VirtoCommerce.SecurityModule.Web.Controllers
         private readonly AuthorizationOptions _authorizationOptions;
 
         public AuthorizationController(
-            //OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
-            //IOptions<IdentityOptions> identityOptions,
-            //SignInManager<ApplicationUser> signInManager,
-            //UserManager<ApplicationUser> userManager,
-            //IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
+            OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
+            IOptions<IdentityOptions> identityOptions,
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
             IOptions<AuthorizationOptions> authorizationOptions)
         {
-            //_applicationManager = applicationManager;
-            //_identityOptions = identityOptions;
-            //_signInManager = signInManager;
-            //_userManager = userManager;
-            //_userClaimsPrincipalFactory = userClaimsPrincipalFactory;
+            _applicationManager = applicationManager;
+            _identityOptions = identityOptions;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
             _authorizationOptions = authorizationOptions.Value;
         }
 

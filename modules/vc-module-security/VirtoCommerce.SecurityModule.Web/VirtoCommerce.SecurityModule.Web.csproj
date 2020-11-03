@@ -10,12 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\VirtoCommerce.Platform.Core\VirtoCommerce.Platform.Core.csproj" />
-    <ProjectReference Include="..\VirtoCommerce.SecurityModule.Data\VirtoCommerce.SecurityModule.Data.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.8" />
+    <PackageReference Include="OpenIddict" Version="2.0.1" />
+    <PackageReference Include="OpenIddict.Core" Version="2.0.1" />
+    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="2.0.1" />
   </ItemGroup>
 
-    <ItemGroup>
-        
-    </ItemGroup>  
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\VirtoCommerce.Platform.Core\VirtoCommerce.Platform.Core.csproj" />
+    <ProjectReference Include="..\VirtoCommerce.SecurityModule.Data\VirtoCommerce.SecurityModule.Data.csproj" />
+  </ItemGroup>  
 
 </Project>

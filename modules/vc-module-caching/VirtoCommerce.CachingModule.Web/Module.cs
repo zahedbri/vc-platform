@@ -1,15 +1,21 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core.Caching;
+using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Redis;
 
-namespace VirtoCommerce.Platform.Caching
+namespace VirtoCommerce.CachingModule.Web
 {
-    public static class ServiceCollectionExtensions
+    public class Module : IModule
     {
-        public static IServiceCollection AddCaching(this IServiceCollection services, IConfiguration configuration)
+        public ManifestModuleInfo ModuleInfo { get; set; }
+
+        public void Initialize(IServiceCollection services)
         {
             services.AddMemoryCache();
+            var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
 
             var redisConnectionString = configuration.GetConnectionString("RedisConnectionString");
 
@@ -27,8 +33,15 @@ namespace VirtoCommerce.Platform.Caching
                 //Use MemoryCache decorator to use global platform cache settings
                 services.AddSingleton<IPlatformMemoryCache, PlatformMemoryCache>();
             }
+        }
 
-            return services;
+        public void PostInitialize(IApplicationBuilder appBuilder)
+        {
+        }
+
+        public void Uninstall()
+        {
+            // do nothing in here
         }
     }
 }

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <module>
-    <id>VirtoCommerce.Security</id>
+    <id>VirtoCommerce.Caching</id>
     <version>1.0.0</version>
     <version-tag>v1</version-tag>
     <platformVersion>3.0.0</platformVersion>
-    <dependencies>
-        <dependency id="VirtoCommerce.Caching" version="1.0.0" />
-    </dependencies>
+    <dependencies></dependencies>
 
-    <title>Security module</title>
+    <title>Caching module</title>
     <description></description>
     <authors>
         <author>Andrei Kostyrin</author>
@@ -25,6 +23,6 @@
     <copyright>Copyright © 2011-2020 Virto Commerce. All rights reserved</copyright>
     <tags></tags>
 
-    <assemblyFile>VirtoCommerce.SecurityModule.Web.dll</assemblyFile>
-    <moduleType>VirtoCommerce.SecurityModule.Web.Module, VirtoCommerce.SecurityModule.Web</moduleType>
+    <assemblyFile>VirtoCommerce.CachingModule.Web.dll</assemblyFile>
+    <moduleType>VirtoCommerce.CachingModule.Web.Module, VirtoCommerce.CachingModule.Web</moduleType>
 </module>

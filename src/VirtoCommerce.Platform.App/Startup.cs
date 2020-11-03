@@ -30,6 +30,7 @@ namespace VirtoCommerce.Platform.App
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //Get platform version from GetExecutingAssembly
             PlatformVersion.CurrentVersion = SemanticVersion.Parse(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion);
 
@@ -37,9 +38,9 @@ namespace VirtoCommerce.Platform.App
             var mvcBuilder = services.AddMvc();
 
             //Events
-            //var inProcessBus = new InProcessBus();
-            //services.AddSingleton<IHandlerRegistrar>(inProcessBus);
-            //services.AddSingleton<IEventPublisher>(inProcessBus);
+            var inProcessBus = new InProcessBus();
+            services.AddSingleton<IHandlerRegistrar>(inProcessBus);
+            services.AddSingleton<IEventPublisher>(inProcessBus);
 
             services.AddFileServices();
 
@@ -54,6 +55,9 @@ namespace VirtoCommerce.Platform.App
             }
 
             app.UseRouting();
+            app.UseCookiePolicy();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -65,6 +69,7 @@ namespace VirtoCommerce.Platform.App
                 {
                     await context.Response.WriteAsync($"Version of the Platform is {PlatformVersion.CurrentVersion}");
                 });
+                
             });
 
             app.UseModules();
