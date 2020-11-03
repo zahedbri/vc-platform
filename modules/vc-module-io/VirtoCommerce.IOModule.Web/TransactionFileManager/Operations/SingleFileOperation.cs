@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using VirtoCommerce.Platform.Core.TransactionFileManager;
 
-namespace VirtoCommerce.Platform.File.Operations
+namespace VirtoCommerce.IOModule.Web.Operations
 {
     /// <summary>
     /// Class that contains common code for those rollbackable file operations which need

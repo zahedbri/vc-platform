@@ -86,7 +86,7 @@ namespace VirtoCommerce.Platform.Modules
                 var passedModules = modules as ModuleInfo[] ?? modules.ToArray();
                 result = base.CompleteListWithDependencies(passedModules).ToArray();
             }
-            catch (MissedModuleException)
+            catch (MissedModuleException ex)
             {
                 // Do not throw if module was missing
                 // Use ValidateDependencyGraph to validate & write and error of module missing

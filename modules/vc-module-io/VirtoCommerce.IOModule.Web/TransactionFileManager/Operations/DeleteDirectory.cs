@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using VirtoCommerce.Platform.Core.TransactionFileManager;
 
-namespace VirtoCommerce.Platform.File.Operations
+namespace VirtoCommerce.IOModule.Web.Operations
 {
     /// <summary>
     /// Deletes the specified directory and all its contents.

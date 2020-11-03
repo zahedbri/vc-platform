@@ -5,7 +5,7 @@ using System.Linq;
 using VirtoCommerce.Platform.Core.TransactionFileManager;
 using VirtoCommerce.Platform.Core.ZipFile;
 
-namespace VirtoCommerce.Platform.File
+namespace VirtoCommerce.IOModule.Web
 {
     public class ZipFileWrapper : IZipFileWrapper
     {

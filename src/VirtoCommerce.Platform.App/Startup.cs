@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,10 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VirtoCommerce.Platform.Core;
-using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.Events;
-using VirtoCommerce.Platform.File;
 using VirtoCommerce.Platform.Modules;
 using VirtoCommerce.Platform.Modules.Extensions;
 
@@ -36,14 +32,7 @@ namespace VirtoCommerce.Platform.App
 
             services.AddOptions<PlatformOptions>().Bind(Configuration.GetSection("VirtoCommerce")).ValidateDataAnnotations();
             var mvcBuilder = services.AddMvc();
-
-            //Events
-            var inProcessBus = new InProcessBus();
-            services.AddSingleton<IHandlerRegistrar>(inProcessBus);
-            services.AddSingleton<IEventPublisher>(inProcessBus);
-
-            services.AddFileServices();
-
+            
             services.AddModules(Configuration, WebHostEnvironment.IsDevelopment(), x => mvcBuilder.AddApplicationPart(x));
         }
 

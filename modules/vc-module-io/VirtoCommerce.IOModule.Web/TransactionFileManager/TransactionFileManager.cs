@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Transactions;
+using VirtoCommerce.IOModule.Web.Operations;
 using VirtoCommerce.Platform.Core.TransactionFileManager;
-using VirtoCommerce.Platform.File.Operations;
 
-namespace VirtoCommerce.Platform.File
+namespace VirtoCommerce.IOModule.Web
 {
     /// <summary>
     /// port from https://github.com/rsevil/Transactions
@@ -34,7 +34,7 @@ namespace VirtoCommerce.Platform.File
         /// <param name="path"></param>
         public void Delete(string path)
         {
-            FileAttributes attributes = System.IO.File.GetAttributes(path);
+            var attributes = File.GetAttributes(path);
 
             if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
             {
@@ -48,7 +48,7 @@ namespace VirtoCommerce.Platform.File
                 if (IsInTransaction())
                     EnlistOperation(new DeleteFile(path));
                 else
-                    System.IO.File.Delete(path);
+                    File.Delete(path);
             }
         }
 
@@ -112,7 +112,7 @@ namespace VirtoCommerce.Platform.File
 
         private static void EnlistOperation(IRollbackableOperation operation)
         {
-            Transaction transaction = Transaction.Current;
+            var transaction = Transaction.Current;
             TransactionFileManagerEnlistment enlistment;
 
             lock (_enlistmentsLock)

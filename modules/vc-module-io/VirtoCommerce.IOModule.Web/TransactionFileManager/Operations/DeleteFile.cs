@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace VirtoCommerce.Platform.File.Operations
+namespace VirtoCommerce.IOModule.Web.Operations
 {
     /// <summary>
     /// Rollbackable operation which deletes a file. An exception is not thrown if the file does not exist.

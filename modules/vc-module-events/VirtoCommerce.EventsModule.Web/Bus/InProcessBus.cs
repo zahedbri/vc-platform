@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.Messages;
 
-namespace VirtoCommerce.Platform.Core.Bus
+namespace VirtoCommerce.EventsModule.Web
 {
     public class InProcessBus : IEventPublisher, IHandlerRegistrar
     {
@@ -22,7 +23,7 @@ namespace VirtoCommerce.Platform.Core.Bus
             handlers.Add((message, token) => handler((T)message, token));
         }
 
-        public async Task Publish<T>(T @event, CancellationToken cancellationToken = default(CancellationToken)) where T : class, IEvent
+        public async Task Publish<T>(T @event, CancellationToken cancellationToken = default) where T : class, IEvent
         {
             if (!EventSuppressor.EventsSuppressed && _routes.TryGetValue(@event.GetType(), out var handlers))
             {
