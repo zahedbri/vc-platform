@@ -32,6 +32,13 @@ using OpenIddict.Validation;
 using AspNet.Security.OpenIdConnect.Primitives;
 using VirtoCommerce.Platform.Security.Authorization;
 using VirtoCommerce.SecurityModule.Web.Authorization;
+using System.Net;
+using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using VirtoCommerce.Platform.Core.Common;
+using Microsoft.AspNetCore.Authentication;
+using VirtoCommerce.Platform.Web.Infrastructure;
 
 namespace VirtoCommerce.SecurityModule.Web
 {
@@ -41,6 +48,10 @@ namespace VirtoCommerce.SecurityModule.Web
 
         public void Initialize(IServiceCollection services)
         {
+            // This custom provider allows able to use just [Authorize] instead of having to define [Authorize(AuthenticationSchemes = "Bearer")] above every API controller
+            // without this Bearer authorization will not work
+            services.AddSingleton<IAuthenticationSchemeProvider, CustomAuthenticationSchemeProvider>();
+
             services.AddDbContext<SecurityDbContext>(options =>
             {
                 //options.UseSqlServer(sp.GetService<IConfiguration>().GetConnectionString("VirtoCommerce"));
@@ -55,8 +66,8 @@ namespace VirtoCommerce.SecurityModule.Web
             services.AddTransient<ISecurityRepository, SecurityRepository>();
             services.AddTransient<Func<ISecurityRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetService<ISecurityRepository>());
 
-            //services.AddScoped<IUserApiKeyService, UserApiKeyService>();
-            //services.AddScoped<IUserApiKeySearchService, UserApiKeySearchService>();
+            services.AddScoped<IUserApiKeyService, UserApiKeyService>();
+            services.AddScoped<IUserApiKeySearchService, UserApiKeySearchService>();
 
             services.AddScoped<IUserNameResolver, HttpContextUserResolver>();
             services.AddSingleton<IPermissionsRegistrar, DefaultPermissionProvider>();
@@ -78,6 +89,11 @@ namespace VirtoCommerce.SecurityModule.Web
             //    services.Configure(setupAction);
             //}
 
+            var authBuilder = services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                                      //Add the second ApiKey auth schema to handle api_key in query string
+                                      .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationOptions.DefaultScheme, options => { })
+                                      .AddCookie();
+
             services.AddIdentity<ApplicationUser, Role>(options => options.Stores.MaxLengthForKeys = 128)
                     .AddEntityFrameworkStores<SecurityDbContext>()
                     .AddDefaultTokenProviders();
@@ -89,6 +105,7 @@ namespace VirtoCommerce.SecurityModule.Web
                 options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
             });
 
+            
             // register the AuthorizationPolicyProvider which dynamically registers authorization policies for each permission defined in module manifest
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
             //Platform authorization handler for policies based on permissions
@@ -105,10 +122,74 @@ namespace VirtoCommerce.SecurityModule.Web
 
             AddOpenIdDict(services, configuration, webHostEnvironment);
 
+            //always  return 401 instead of 302 for unauthorized  requests
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    return Task.CompletedTask;
+                };
+                options.Events.OnRedirectToAccessDenied = context =>
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    return Task.CompletedTask;
+                };
+            });
+
+            
+
+            //Create backup of token handler before default claim maps are cleared
+            var defaultTokenHandler = new JwtSecurityTokenHandler();
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
+            authBuilder.AddJwtBearer(options =>
+            {
+                options.Authority = configuration["Auth:Authority"];
+                options.Audience = configuration["Auth:Audience"];
+
+                if (webHostEnvironment.IsDevelopment())
+                {
+                    options.RequireHttpsMetadata = false;
+                }
+
+                options.IncludeErrorDetails = true;
+
+                X509SecurityKey publicKey = null;
+                if (!configuration["Auth:PublicCertPath"].IsNullOrEmpty())
+                {
+                    var publicCert = new X509Certificate2(configuration["Auth:PublicCertPath"]);
+                    publicKey = new X509SecurityKey(publicCert);
+                }
+
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    NameClaimType = OpenIdConnectConstants.Claims.Subject,
+                    RoleClaimType = OpenIdConnectConstants.Claims.Role,
+                    ValidateIssuer = !string.IsNullOrEmpty(options.Authority),
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = publicKey
+                };
+            });
+
+
+            services.AddAuthorization(options =>
+            {
+                //We need this policy because it is a single way to implicitly use the two schema (JwtBearer and ApiKey)  authentication for resource based authorization.
+                var mutipleSchemaAuthPolicy = new AuthorizationPolicyBuilder().AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme, ApiKeyAuthenticationOptions.DefaultScheme)
+                                                                              .RequireAuthenticatedUser()
+                                                                              .Build();
+                //The good article is described the meaning DefaultPolicy and FallbackPolicy
+                //https://scottsauber.com/2020/01/20/globally-require-authenticated-users-by-default-using-fallback-policies-in-asp-net-core/
+                options.DefaultPolicy = mutipleSchemaAuthPolicy;
+            });
+
         }
 
         public void PostInitialize(IApplicationBuilder app)
         {
+            app.UsePlatformPermissions();
             app.UseDefaultUsersAsync().GetAwaiter().GetResult();
         }
 
@@ -192,16 +273,7 @@ namespace VirtoCommerce.SecurityModule.Web
                         privateKey = new X509Certificate2(bytes, configuration["Auth:PrivateKeyPassword"], X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.EphemeralKeySet);
                     }
                     options.AddSigningCertificate(privateKey);
-                })
-                // Register the OpenIddict validation handler.
-                // Note: the OpenIddict validation handler is only compatible with the
-                // default token format or with reference tokens and cannot be used with
-                // JWT tokens. For JWT tokens, use the Microsoft JWT bearer handler.
-                .AddValidation();
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = OpenIddictValidationDefaults.AuthenticationScheme;
-            });
+                });
         }
 
     }

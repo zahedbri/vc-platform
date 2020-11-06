@@ -2,7 +2,7 @@ using System.Threading;
 using Microsoft.AspNetCore.Http;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
-using static VirtoCommerce.Platform.Data.Constants.DefaultEntityNames;
+//using static VirtoCommerce.Platform.Data.Constants.DefaultEntityNames;
 
 namespace VirtoCommerce.Platform.Security
 {
@@ -17,7 +17,7 @@ namespace VirtoCommerce.Platform.Security
 
         public string GetCurrentUserName()
         {
-            var result = Thread.GetData(Thread.GetNamedDataSlot(ThreadSlotNames.USER_NAME)) as string ?? UNKNOWN_USERNAME;
+            var result = Thread.GetData(Thread.GetNamedDataSlot(ThreadSlotNames.USER_NAME)) as string ?? "";
 
             var context = _httpContextAccessor.HttpContext;
             if (context != null && context.Request != null && context.User != null)

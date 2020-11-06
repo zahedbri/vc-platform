@@ -31,7 +31,7 @@ namespace VirtoCommerce.Platform.App
             PlatformVersion.CurrentVersion = SemanticVersion.Parse(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion);
 
             services.AddOptions<PlatformOptions>().Bind(Configuration.GetSection("VirtoCommerce")).ValidateDataAnnotations();
-            var mvcBuilder = services.AddMvc();
+            var mvcBuilder = services.AddMvc().AddNewtonsoftJson();
             
             services.AddModules(Configuration, WebHostEnvironment.IsDevelopment(), x => mvcBuilder.AddApplicationPart(x));
         }
@@ -53,12 +53,6 @@ namespace VirtoCommerce.Platform.App
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync($"Version of the Platform is {PlatformVersion.CurrentVersion}");
-                });
-                
             });
 
             app.UseModules();

@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\VirtoCommerce.Platform.Core\VirtoCommerce.Platform.Core.csproj" />
+    <ProjectReference Include="..\..\vc-module-caching\VirtoCommerce.CachingModule.Web\VirtoCommerce.CachingModule.Web.csproj" />
     <ProjectReference Include="..\VirtoCommerce.SecurityModule.Data\VirtoCommerce.SecurityModule.Data.csproj" />
   </ItemGroup>  
 
