@@ -7,13 +7,14 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using VirtoCommerce.Platform.Core;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.RCL.Model.Home;
 using VirtoCommerce.Platform.Web.Infrastructure;
 using static VirtoCommerce.Platform.Core.PlatformConstants.Settings;
 
-namespace VirtoCommerce.Platform.RCL.Controllers
+namespace VirtoCommerce.UXModule.Web.Controllers
 {
     public class HomeController : Controller
     {
@@ -35,11 +36,11 @@ namespace VirtoCommerce.Platform.RCL.Controllers
             //_settingsManager = settingsManager;
         }
 
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
             var model = new IndexModel
             {
-                PlatformVersion = new HtmlString(Core.Common.PlatformVersion.CurrentVersion.ToString()),
+                PlatformVersion = new HtmlString(PlatformVersion.CurrentVersion.ToString()),
                 DemoCredentials = new HtmlString(_platformOptions.DemoCredentials ?? "''"),
                 DemoResetTime = new HtmlString(_platformOptions.DemoResetTime ?? "''"),
                 WebAnalyticsOptions = _webAnalyticsOptions,
@@ -74,6 +75,7 @@ namespace VirtoCommerce.Platform.RCL.Controllers
                     model.DemoResetTime = new HtmlString(JsonConvert.SerializeObject(resetTime).Replace("\"", "'") ?? "''");
                 }
             }
+
 
             return View(model);
         }

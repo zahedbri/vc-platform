@@ -1,13 +1,9 @@
 
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -21,29 +17,6 @@ namespace VirtoCommerce.UXModule.Web
 
         public void Initialize(IServiceCollection services)
         {
-            
-
-            var builder = services.AddControllersWithViews();
-            //var assembly = typeof(HomeController).GetTypeInfo().Assembly;
-            //services.AddControllersWithViews()
-            //    .AddRazorRuntimeCompilation(options => options.FileProviders.Add(
-            //        new PhysicalFileProvider(ModuleInfo.FullPhysicalPath)));
-            //services.AddRazorPages(opt => { opt.RootDirectory = "/Views/"; })
-            //.AddRazorRuntimeCompilation(
-            //    opt =>
-            //    {
-            //        opt.FileProviders.Add(new PhysicalFileProvider(ModuleInfo.FullPhysicalPath));
-            //    });
-            //var builder = services.AddMvc();
-            //builder.AddApplicationPart(typeof(HomeController).Assembly);
-            //services.Configure<RazorViewEngineOptions>(options =>
-            //{
-            //    options.FileProviders.Add(
-            //        new EmbeddedFileProvider(assembly));
-            //});
-
-
-
         }
 
         public void PostInitialize(IApplicationBuilder app)

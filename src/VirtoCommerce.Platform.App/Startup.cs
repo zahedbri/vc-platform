@@ -31,9 +31,10 @@ namespace VirtoCommerce.Platform.App
             PlatformVersion.CurrentVersion = SemanticVersion.Parse(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion);
 
             services.AddOptions<PlatformOptions>().Bind(Configuration.GetSection("VirtoCommerce")).ValidateDataAnnotations();
+
             var mvcBuilder = services.AddMvc().AddNewtonsoftJson();
-            
-            services.AddModules(Configuration, WebHostEnvironment.IsDevelopment(), x => mvcBuilder.AddApplicationPart(x));
+
+            services.AddModules(Configuration, WebHostEnvironment.IsDevelopment(), x => mvcBuilder.AddApplicationPartWithRelatedAssembly(x));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

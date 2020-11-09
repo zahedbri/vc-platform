@@ -1,6 +1,6 @@
 using System;
 
-namespace VirtoCommerce.Platform.Web.Model
+namespace VirtoCommerce.UXModule.Web.Model
 {
     public class LastModifiedResponse
     {
