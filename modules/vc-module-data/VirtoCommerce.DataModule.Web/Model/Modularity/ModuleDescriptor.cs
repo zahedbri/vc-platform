@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Modularity;
 
-namespace VirtoCommerce.Platform.Web.Modularity
+namespace VirtoCommerce.DataModule.Web.Model.Modularity
 {
     public class ModuleDescriptor : Entity
     {

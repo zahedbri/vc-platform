@@ -2,7 +2,7 @@ using System.IO;
 using Microsoft.Extensions.Options;
 using VirtoCommerce.Platform.Core;
 
-namespace VirtoCommerce.Platform.Web.Licensing
+namespace VirtoCommerce.DataModule.Data.Licensing
 {
     public class LicenseProvider
     {
@@ -17,9 +17,9 @@ namespace VirtoCommerce.Platform.Web.Licensing
             License license = null;
 
             var licenseFilePath = Path.GetFullPath(_platformOptions.LicenseFilePath);
-            if (System.IO.File.Exists(licenseFilePath))
+            if (File.Exists(licenseFilePath))
             {
-                var rawLicense = System.IO.File.ReadAllText(licenseFilePath);
+                var rawLicense = File.ReadAllText(licenseFilePath);
                 license = License.Parse(rawLicense, Path.GetFullPath(_platformOptions.LicensePublicKeyPath));
 
                 if (license != null)

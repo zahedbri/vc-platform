@@ -1,4 +1,4 @@
-namespace VirtoCommerce.UXModule.Web.Model
+namespace VirtoCommerce.DataModule.Web.Model
 {
     public class ForceChangesRequest
     {

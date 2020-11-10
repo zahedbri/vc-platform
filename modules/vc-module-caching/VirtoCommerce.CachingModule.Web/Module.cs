@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Modularity;
@@ -27,6 +28,10 @@ namespace VirtoCommerce.CachingModule.Web
                 services.AddOptions<RedisCachingOptions>().Bind(configuration.GetSection("Caching:Redis")).ValidateDataAnnotations();
 
                 services.AddSingleton<IPlatformMemoryCache, RedisPlatformMemoryCache>();
+
+                var redis = ConnectionMultiplexer.Connect(redisConnectionString);
+                services.AddSingleton<IConnectionMultiplexer>(redis);
+                services.AddSingleton(redis.GetSubscriber());
             }
             else
             {

@@ -39,22 +39,22 @@ namespace VirtoCommerce.Platform.Data.ExportImport
             UserManager<ApplicationUser> userManager
             , RoleManager<Role> roleManager
             , ISettingsManager settingsManager
-            //, IDynamicPropertyService dynamicPropertyService
-            //, IDynamicPropertySearchService dynamicPropertySearchService
+            , IDynamicPropertyService dynamicPropertyService
+            , IDynamicPropertySearchService dynamicPropertySearchService
             , ILocalModuleCatalog moduleCatalog
-            //, IDynamicPropertyDictionaryItemsService dynamicPropertyDictionaryItemsService
-            //, IDynamicPropertyDictionaryItemsSearchService dynamicPropertyDictionaryItemsSearchService
+            , IDynamicPropertyDictionaryItemsService dynamicPropertyDictionaryItemsService
+            , IDynamicPropertyDictionaryItemsSearchService dynamicPropertyDictionaryItemsSearchService
             , IUserApiKeyService userApiKeyService
             , IUserApiKeySearchService userApiKeySearchService)
         {
-            //_dynamicPropertyService = dynamicPropertyService;
+            _dynamicPropertyService = dynamicPropertyService;
             _userManager = userManager;
             _roleManager = roleManager;
             _settingsManager = settingsManager;
             _moduleCatalog = moduleCatalog;
-            //_dynamicPropertyDictionaryItemsService = dynamicPropertyDictionaryItemsService;
-            //_dynamicPropertyDictionaryItemsSearchService = dynamicPropertyDictionaryItemsSearchService;
-            //_dynamicPropertySearchService = dynamicPropertySearchService;
+            _dynamicPropertyDictionaryItemsService = dynamicPropertyDictionaryItemsService;
+            _dynamicPropertyDictionaryItemsSearchService = dynamicPropertyDictionaryItemsSearchService;
+            _dynamicPropertySearchService = dynamicPropertySearchService;
             _userApiKeyService = userApiKeyService;
             _userApiKeySearchService = userApiKeySearchService;
         }

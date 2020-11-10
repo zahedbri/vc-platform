@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <module>
-    <id>VirtoCommerce.Data</id>
+    <id>VirtoCommerce.PushNotifications</id>
     <version>1.0.0</version>
     <version-tag>v1</version-tag>
     <platformVersion>3.0.0</platformVersion>
-    <dependencies>
-        <dependency id="VirtoCommerce.Hangfire" version="1.0.0" />
-        <dependency id="VirtoCommerce.PushNotifications" version="1.0.0" />
-    </dependencies>
 
-    <title>Data module</title>
+    <title>PushNotifications module</title>
     <description></description>
     <authors>
         <author>Andrei Kostyrin</author>
@@ -26,6 +22,6 @@
     <copyright>Copyright © 2011-2020 Virto Commerce. All rights reserved</copyright>
     <tags></tags>
 
-    <assemblyFile>VirtoCommerce.DataModule.Web.dll</assemblyFile>
-    <moduleType>VirtoCommerce.DataModule.Web.Module, VirtoCommerce.DataModule.Web</moduleType>
+    <assemblyFile>VirtoCommerce.PushNotificationsModule.Web.dll</assemblyFile>
+    <moduleType>VirtoCommerce.PushNotificationsModule.Web.Module, VirtoCommerce.PushNotificationsModule.Web</moduleType>
 </module>

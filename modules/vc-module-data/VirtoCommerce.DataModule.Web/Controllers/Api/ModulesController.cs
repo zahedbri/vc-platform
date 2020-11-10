@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
+//using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
+using VirtoCommerce.DataModule.Web.Model.Modularity;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Modularity;
@@ -41,12 +43,12 @@ namespace VirtoCommerce.Platform.Web.Controllers.Api
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
 
         public ModulesController(IExternalModuleCatalog externalModuleCatalog, IModuleInstaller moduleInstaller
-            //, IPushNotificationManager pushNotifier
+            , IPushNotificationManager pushNotifier
             , IUserNameResolver userNameResolver, ISettingsManager settingsManager, IOptions<PlatformOptions> platformOptions, IOptions<ExternalModuleCatalogOptions> externalModuleCatalogOptions, IPlatformRestarter platformRestarter)
         {
             _externalModuleCatalog = externalModuleCatalog;
             _moduleInstaller = moduleInstaller;
-            //_pushNotifier = pushNotifier;
+            _pushNotifier = pushNotifier;
             _userNameResolver = userNameResolver;
             _settingsManager = settingsManager;
             _platformOptions = platformOptions.Value;

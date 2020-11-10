@@ -6,9 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.PushNotifications;
+using VirtoCommerce.Platform.Web.PushNotifications;
 using VirtoCommerce.Platform.Web.PushNotifications.Scalability;
 
-namespace VirtoCommerce.Platform.Web.PushNotifications
+namespace VirtoCommerce.PushNotificationsModule.Web.PushNotifications
 {
     public static class SignalRBuilderExtensions
     {
@@ -16,7 +17,7 @@ namespace VirtoCommerce.Platform.Web.PushNotifications
         {
             builder.Services.AddSingleton<IPushNotificationStorage, PushNotificationInMemoryStorage>();
 
-            var scalabilityMode = configuration["PushNotifications:ScalabilityMode"];                     
+            var scalabilityMode = configuration["PushNotifications:ScalabilityMode"];
 
             // SignalR scalability configuration.
             if (scalabilityMode != null && !scalabilityMode.EqualsInvariant("None"))
@@ -28,8 +29,8 @@ namespace VirtoCommerce.Platform.Web.PushNotifications
                 {
                     jsonOptions.PayloadSerializerSettings.TypeNameHandling = TypeNameHandling.Objects;
                     jsonOptions.PayloadSerializerSettings.TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple;
-                });          
-              
+                });
+
                 builder.Services.AddSingleton<IPushNotificationManager, ScalablePushNotificationManager>();
                 builder.Services.AddHostedService<PushNotificationSynchronizerTask>();
 
@@ -53,7 +54,7 @@ namespace VirtoCommerce.Platform.Web.PushNotifications
                         throw new InvalidOperationException($"RedisConnectionString must be set");
                     }
                     builder.AddStackExchangeRedis(redisConnectionString);
-                }               
+                }
             }
             else
             {
@@ -63,6 +64,6 @@ namespace VirtoCommerce.Platform.Web.PushNotifications
             return builder;
         }
 
-     
+
     }
 }

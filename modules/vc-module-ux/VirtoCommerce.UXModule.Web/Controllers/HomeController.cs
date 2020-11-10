@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using VirtoCommerce.DataModule.Data.Licensing;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Modularity;
@@ -21,22 +22,22 @@ namespace VirtoCommerce.UXModule.Web.Controllers
         private readonly PlatformOptions _platformOptions;
         private readonly WebAnalyticsOptions _webAnalyticsOptions;
         private readonly LocalStorageModuleCatalogOptions _localStorageModuleCatalogOptions;
-        //private readonly LicenseProvider _licenseProvider;
+        private readonly LicenseProvider _licenseProvider;
         private readonly ISettingsManager _settingsManager;
 
         public HomeController(IOptions<PlatformOptions> platformOptions, IOptions<WebAnalyticsOptions> webAnalyticsOptions, IOptions<LocalStorageModuleCatalogOptions> localStorageModuleCatalogOptions
-            //, LicenseProvider licenseProvider
-            //, ISettingsManager settingsManager
+            , LicenseProvider licenseProvider
+            , ISettingsManager settingsManager
             )
         {
             _platformOptions = platformOptions.Value;
             _webAnalyticsOptions = webAnalyticsOptions.Value;
             _localStorageModuleCatalogOptions = localStorageModuleCatalogOptions.Value;
-            //_licenseProvider = licenseProvider;
-            //_settingsManager = settingsManager;
+            _licenseProvider = licenseProvider;
+            _settingsManager = settingsManager;
         }
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var model = new IndexModel
             {
@@ -47,17 +48,17 @@ namespace VirtoCommerce.UXModule.Web.Controllers
                 RefreshProbingFolder = _localStorageModuleCatalogOptions.RefreshProbingFolderOnStart
             };
 
-            //var license = _licenseProvider.GetLicense();
+            var license = _licenseProvider.GetLicense();
 
-            //if (license != null)
-            //{
-            //    model.SendDiagnosticData = license.ExpirationDate < DateTime.UtcNow || await _settingsManager.GetValueAsync(Setup.SendDiagnosticData.Name, (bool)Setup.SendDiagnosticData.DefaultValue);
-            //    model.License = new HtmlString(JsonConvert.SerializeObject(license, new JsonSerializerSettings
-            //    {
-            //        ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            //        DateTimeZoneHandling = DateTimeZoneHandling.Utc
-            //    }).Replace("\"", "'"));
-            //}
+            if (license != null)
+            {
+                model.SendDiagnosticData = license.ExpirationDate < DateTime.UtcNow || await _settingsManager.GetValueAsync(Setup.SendDiagnosticData.Name, (bool)Setup.SendDiagnosticData.DefaultValue);
+                model.License = new HtmlString(JsonConvert.SerializeObject(license, new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                }).Replace("\"", "'"));
+            }
 
             if (!string.IsNullOrEmpty(model.DemoResetTime.Value))
             {

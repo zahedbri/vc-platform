@@ -2,10 +2,14 @@ using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using VirtoCommerce.DataModule.Data.DynamicProperties;
+using VirtoCommerce.DataModule.Data.Licensing;
+using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Localizations;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.Platform.Data.ChangeLog;
 using VirtoCommerce.Platform.Data.ExportImport;
 using VirtoCommerce.Platform.Data.Localizations;
 using VirtoCommerce.Platform.Data.Repositories;
@@ -26,16 +30,11 @@ namespace VirtoCommerce.DataModule.Web
 
             services.AddSettings();
 
-            //services.AddDynamicProperties();
+            services.AddDynamicProperties();
 
-            //var inProcessBus = new InProcessBus();
-            //services.AddSingleton<IHandlerRegistrar>(inProcessBus);
-            //services.AddSingleton<IEventPublisher>(inProcessBus);
-            //services.AddTransient<IChangeLogService, ChangeLogService>();
-            //services.AddTransient<ILastModifiedDateTime, ChangeLogService>();
-            //services.AddTransient<IChangeLogSearchService, ChangeLogSearchService>();
-
-            //services.AddCaching(configuration);
+            services.AddTransient<IChangeLogService, ChangeLogService>();
+            services.AddTransient<ILastModifiedDateTime, ChangeLogService>();
+            services.AddTransient<IChangeLogSearchService, ChangeLogSearchService>();
 
             services.AddScoped<IPlatformExportImportManager, PlatformExportImportManager>();
 
@@ -46,6 +45,8 @@ namespace VirtoCommerce.DataModule.Web
             services.AddSingleton<ITranslationDataProvider, PlatformTranslationDataProvider>();
             services.AddSingleton<ITranslationDataProvider, ModulesTranslationDataProvider>();
             services.AddSingleton<ITranslationService, TranslationService>();
+
+            services.AddSingleton<LicenseProvider>();
         }
 
         public void PostInitialize(IApplicationBuilder app)
@@ -53,6 +54,20 @@ namespace VirtoCommerce.DataModule.Web
             var settingsRegistrar = app.ApplicationServices.GetRequiredService<ISettingsRegistrar>();
             settingsRegistrar.RegisterSettings(AllSettings, "Platform");
             settingsRegistrar.RegisterSettingsForType(UserProfile.AllSettings, typeof(UserProfile).Name);
+
+            var settingsManager = app.ApplicationServices.GetRequiredService<ISettingsManager>();
+
+            var sendDiagnosticData = settingsManager.GetValue(Setup.SendDiagnosticData.Name, (bool)Setup.SendDiagnosticData.DefaultValue);
+            if (!sendDiagnosticData)
+            {
+                var licenseProvider = app.ApplicationServices.GetRequiredService<LicenseProvider>();
+                var license = licenseProvider.GetLicense();
+
+                if (license == null || license.ExpirationDate < DateTime.UtcNow)
+                {
+                    settingsManager.SetValue(Setup.SendDiagnosticData.Name, true);
+                }
+            }
         }
 
         public void Uninstall()

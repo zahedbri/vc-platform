@@ -1,3 +1,4 @@
+using VirtoCommerce.DataModule.Web.Model.Modularity;
 using VirtoCommerce.Platform.Core.Modularity;
 
 namespace VirtoCommerce.Platform.Web.Modularity

@@ -1,7 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using VirtoCommerce.Platform.Core.DynamicProperties;
+using VirtoCommerce.Platform.Data.DynamicProperties;
 
-namespace VirtoCommerce.Platform.Data.DynamicProperties
+namespace VirtoCommerce.DataModule.Data.DynamicProperties
 {
     public static class ServiceCollectionExtenions
     {

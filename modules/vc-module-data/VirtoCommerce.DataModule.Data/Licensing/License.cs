@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using VirtoCommerce.Platform.Core.Exceptions;
 using VirtoCommerce.Platform.Core.Extensions;
 
-namespace VirtoCommerce.Platform.Web.Licensing
+namespace VirtoCommerce.DataModule.Data.Licensing
 {
     public sealed class License
     {

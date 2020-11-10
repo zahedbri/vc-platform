@@ -18,7 +18,6 @@ using VirtoCommerce.Platform.Core.ExportImport.PushNotifications;
 using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
-//using VirtoCommerce.Platform.Hangfire;
 
 using Permissions = VirtoCommerce.Platform.Core.PlatformConstants.Security.Permissions;
 
@@ -39,13 +38,13 @@ namespace VirtoCommerce.Platform.Web.Controllers.Api
 
         public PlatformExportImportController(
             IPlatformExportImportManager platformExportManager,
-            //IPushNotificationManager pushNotifier,
+            IPushNotificationManager pushNotifier,
             ISettingsManager settingManager,
             IUserNameResolver userNameResolver,
             IOptions<PlatformOptions> options)
         {
             _platformExportManager = platformExportManager;
-            //_pushNotifier = pushNotifier;
+            _pushNotifier = pushNotifier;
             _settingsManager = settingManager;
             _userNameResolver = userNameResolver;
             _platformOptions = options.Value;
