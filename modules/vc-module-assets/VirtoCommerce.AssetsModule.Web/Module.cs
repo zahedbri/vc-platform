@@ -7,6 +7,7 @@ using VirtoCommerce.Platform.Assets.AzureBlobStorage;
 using VirtoCommerce.Platform.Assets.AzureBlobStorage.Extensions;
 using VirtoCommerce.Platform.Assets.FileSystem;
 using VirtoCommerce.Platform.Assets.FileSystem.Extensions;
+using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Modularity;
 
@@ -20,7 +21,6 @@ namespace VirtoCommerce.AssetsModule.Web
         {
             var providerSnapshot = services.BuildServiceProvider();
             var configuration = providerSnapshot.GetService<IConfiguration>();
-            var webHostEnvironment = providerSnapshot.GetService<IWebHostEnvironment>();
 
             //Assets
             var assetsProvider = configuration.GetSection("Assets:Provider").Value;
@@ -34,7 +34,7 @@ namespace VirtoCommerce.AssetsModule.Web
                 services.AddOptions<FileSystemBlobOptions>().Bind(configuration.GetSection("Assets:FileSystem"))
                       .PostConfigure(options =>
                       {
-                          options.RootPath = webHostEnvironment.MapPath(options.RootPath);
+                          options.RootPath = HostConfiguration.MapPath(options.RootPath);
                       }).ValidateDataAnnotations();
 
                 services.AddFileSystemBlobProvider();

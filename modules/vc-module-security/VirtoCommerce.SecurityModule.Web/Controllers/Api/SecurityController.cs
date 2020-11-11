@@ -44,9 +44,7 @@ namespace VirtoCommerce.SecurityModule.Web.Controllers.Api
         public SecurityController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, RoleManager<Role> roleManager,
                 IPermissionsRegistrar permissionsProvider, IUserSearchService userSearchService, IRoleSearchService roleSearchService,
                 IOptions<AuthorizationOptions> securityOptions, IPasswordCheckService passwordCheckService
-            //, IEmailSender emailSender
-            ,
-                IEventPublisher eventPublisher, IUserApiKeyService userApiKeyService, IUserPasswordHasher userPasswordHasher)
+                , IEmailSender emailSender, IEventPublisher eventPublisher, IUserApiKeyService userApiKeyService, IUserPasswordHasher userPasswordHasher)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -56,7 +54,7 @@ namespace VirtoCommerce.SecurityModule.Web.Controllers.Api
             _roleManager = roleManager;
             _userSearchService = userSearchService;
             _roleSearchService = roleSearchService;
-            //_emailSender = emailSender;
+            _emailSender = emailSender;
             _eventPublisher = eventPublisher;
             _userApiKeyService = userApiKeyService;
             _userPasswordHasher = userPasswordHasher;

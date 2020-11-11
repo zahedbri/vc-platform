@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Modularity;
 
 namespace VirtoCommerce.UXModule.Web
@@ -21,12 +21,12 @@ namespace VirtoCommerce.UXModule.Web
 
         public void PostInitialize(IApplicationBuilder app)
         {
-            var webHostEnvironment = app.ApplicationServices.GetService<IWebHostEnvironment>();
-            webHostEnvironment.WebRootPath = ModuleInfo.FullPhysicalPath;
+            HostConfiguration.WebRootPath = ModuleInfo.FullPhysicalPath;
+            HostConfiguration.ContentRootPath = HostConfiguration.MapPath("~/Content");
 
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(webHostEnvironment.MapPath("~/Content")),
+                FileProvider = new PhysicalFileProvider(HostConfiguration.ContentRootPath),
                 RequestPath = new PathString("")
             });
 
@@ -54,13 +54,13 @@ namespace VirtoCommerce.UXModule.Web
             //Handle all requests like a $(Platform) and Modules/$({ module.ModuleName }) as static files in correspond folder
             app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(webHostEnvironment.MapPath("~/js")),
+                FileProvider = new PhysicalFileProvider(HostConfiguration.MapPath("~/js")),
                 RequestPath = new PathString($"/$(Platform)/Scripts")
             });
 
             app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(webHostEnvironment.MapPath("~/dist")),
+                FileProvider = new PhysicalFileProvider(HostConfiguration.MapPath("~/dist")),
                 RequestPath = new PathString($"/dist")
             });
 

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 using VirtoCommerce.DataModule.Data.Licensing;
 using VirtoCommerce.Platform.Core;
 
-namespace VirtoCommerce.Platform.Web.Controllers.Api
+namespace VirtoCommerce.DataModule.Web.Controllers.Api
 {
     [Route("api/platform/licensing")]
     [Authorize(PlatformConstants.Security.Permissions.ModuleManage)]

@@ -7,7 +7,7 @@ using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 
-namespace VirtoCommerce.Platform.Web.Controllers.Api
+namespace VirtoCommerce.DataModule.Web.Controllers.Api
 {
     [Produces("application/json")]
     [Route("api/platform/settings")]
@@ -52,7 +52,7 @@ namespace VirtoCommerce.Platform.Web.Controllers.Api
                 Take = int.MaxValue
             };
             var result = await _settingsSearchService.SearchSettingsAsync(criteria);
-            return Ok(result.Results.Where(x=>!x.IsHidden).ToList());
+            return Ok(result.Results.Where(x => !x.IsHidden).ToList());
         }
 
         /// <summary>

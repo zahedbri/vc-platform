@@ -21,7 +21,7 @@ using VirtoCommerce.Platform.Core.Settings;
 
 using Permissions = VirtoCommerce.Platform.Core.PlatformConstants.Security.Permissions;
 
-namespace VirtoCommerce.Platform.Web.Controllers.Api
+namespace VirtoCommerce.DataModule.Web.Controllers.Api
 {
     [Route("api/platform")]
     [ApiExplorerSettings(IgnoreApi = true)]

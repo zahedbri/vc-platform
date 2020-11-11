@@ -7,7 +7,7 @@ using VirtoCommerce.DataModule.Web.Model;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.ChangeLog;
 
-namespace VirtoCommerce.Platform.Web.Controllers.Api
+namespace VirtoCommerce.DataModule.Web.Controllers.Api
 {
     [Route("api/platform")]
     [Authorize]

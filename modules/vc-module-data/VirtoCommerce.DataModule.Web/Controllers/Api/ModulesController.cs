@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
-//using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -25,7 +24,7 @@ using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Data.Helpers;
 using VirtoCommerce.Platform.Web.Modularity;
 
-namespace VirtoCommerce.Platform.Web.Controllers.Api
+namespace VirtoCommerce.DataModule.Web.Controllers.Api
 {
     [Route("api/platform/modules")]
     [Authorize]

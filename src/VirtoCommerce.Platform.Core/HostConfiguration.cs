@@ -1,21 +1,27 @@
 using System;
 using System.IO;
-using Microsoft.AspNetCore.Hosting;
 
-namespace VirtoCommerce.UXModule.Web
+namespace VirtoCommerce.Platform.Core
 {
-    public static class HostingEnviromentExtension
+    public static class HostConfiguration
     {
-        public static string GetRelativePath(this IWebHostEnvironment hostEnv, string basePath, string path)
+        public static string WebRootPath { get; set; }
+
+        public static string ContentRootPath { get; set; }
+
+        public static bool IsDevelopment { get; set; }
+
+
+        public static string GetRelativePath(string basePath, string path)
         {
-            var basePathuri = new Uri(hostEnv.MapPath(basePath));
+            var basePathuri = new Uri(MapPath(basePath));
             var pathUri = new Uri(path);
             return "/" + basePathuri.MakeRelativeUri(pathUri).ToString();
         }
 
-        public static string MapPath(this IWebHostEnvironment hostEnv, string path)
+        public static string MapPath(string path)
         {
-            var result = hostEnv.WebRootPath;
+            var result = WebRootPath;
 
             if (path.StartsWith("~/"))
             {

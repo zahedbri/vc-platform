@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using VirtoCommerce.DataModule.Web.Extensions;
+using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Localizations;
 
-namespace VirtoCommerce.SecurityModule.Web.Controllers.Api
+namespace VirtoCommerce.DataModule.Web.Controllers.Api
 {
     [Produces("application/json")]
     [Route("api/platform/localization")]
@@ -85,7 +85,7 @@ namespace VirtoCommerce.SecurityModule.Web.Controllers.Api
             var files = new List<string>();
 
             // Get platform internationalization files
-            var platformPath = _hostingEnv.MapPath("~/");
+            var platformPath = HostConfiguration.MapPath("~/");
             var platformFileNames = GetFilesByPath(platformPath, searchPattern, internationalizationsFolder);
             files.AddRange(platformFileNames);
 

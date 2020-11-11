@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using VirtoCommerce.DataModule.Data.DynamicProperties;
 using VirtoCommerce.DataModule.Data.Licensing;
+using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Localizations;
 using VirtoCommerce.Platform.Core.Modularity;
+using VirtoCommerce.Platform.Core.Notifications;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Data.ChangeLog;
 using VirtoCommerce.Platform.Data.ExportImport;
@@ -38,10 +40,14 @@ namespace VirtoCommerce.DataModule.Web
 
             services.AddScoped<IPlatformExportImportManager, PlatformExportImportManager>();
 
-            //services.AddTransient<IEmailSender, DefaultEmailSender>();
-
+            services.AddTransient<IEmailSender, DefaultEmailSender>();
 
             //Register dependencies for translation
+            services.AddOptions<TranslationOptions>().Configure(options =>
+            {
+                options.PlatformTranslationFolderPath = HostConfiguration.MapPath(options.PlatformTranslationFolderPath);
+            });
+
             services.AddSingleton<ITranslationDataProvider, PlatformTranslationDataProvider>();
             services.AddSingleton<ITranslationDataProvider, ModulesTranslationDataProvider>();
             services.AddSingleton<ITranslationService, TranslationService>();

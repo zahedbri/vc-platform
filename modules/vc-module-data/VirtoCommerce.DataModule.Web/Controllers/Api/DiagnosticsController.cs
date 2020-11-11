@@ -10,7 +10,7 @@ using VirtoCommerce.DataModule.Web.Model.Modularity;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Modularity;
 
-namespace VirtoCommerce.Platform.Web.Controllers.Api
+namespace VirtoCommerce.DataModule.Web.Controllers.Api
 {
     [Route("api/platform/diagnostics")]
     [Authorize]
