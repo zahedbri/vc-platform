@@ -58,12 +58,6 @@ namespace VirtoCommerce.UXModule.Web
                 RequestPath = new PathString($"/$(Platform)/Scripts")
             });
 
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(HostConfiguration.MapPath("~/dist")),
-                RequestPath = new PathString($"/dist")
-            });
-
             var localModules = app.ApplicationServices.GetRequiredService<ILocalModuleCatalog>().Modules;
             foreach (var module in localModules.OfType<ManifestModuleInfo>())
             {
