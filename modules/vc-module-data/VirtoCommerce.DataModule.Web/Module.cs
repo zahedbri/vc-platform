@@ -53,6 +53,9 @@ namespace VirtoCommerce.DataModule.Web
             services.AddSingleton<ITranslationService, TranslationService>();
 
             services.AddSingleton<LicenseProvider>();
+
+
+            
         }
 
         public void PostInitialize(IApplicationBuilder app)

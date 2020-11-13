@@ -16,8 +16,8 @@ using VirtoCommerce.AssetsModule.Web.Validators;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Swagger;
 using VirtoCommerce.Platform.Data.Helpers;
-using VirtoCommerce.SwaggerModule.Core.Model;
 
 namespace VirtoCommerce.AssetsModule.Web.Controllers.Api
 {

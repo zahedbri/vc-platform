@@ -13,7 +13,6 @@
         <PackageReference Include="FluentValidation" Version="8.6.3" />
         <ProjectReference Include="..\..\..\src\VirtoCommerce.Platform.Core\VirtoCommerce.Platform.Core.csproj" />
         <ProjectReference Include="..\..\vc-module-data\VirtoCommerce.DataModule.Data\VirtoCommerce.DataModule.Data.csproj" />
-        <ProjectReference Include="..\..\vc-module-swagger\VirtoCommerce.SwaggerModule.Core\VirtoCommerce.SwaggerModule.Core.csproj" />
         <ProjectReference Include="..\VirtoCommerce.Platform.Assets.AzureBlobStorage\VirtoCommerce.AssetsModule.AzureBlobStorage.csproj" />
         <ProjectReference Include="..\VirtoCommerce.Platform.Assets.FileSystem\VirtoCommerce.AssetsModule.FileSystem.csproj" />
     </ItemGroup>

@@ -27,7 +27,7 @@ namespace VirtoCommerce.Platform.Web.Swagger
         /// 
         /// </summary>
         /// <param name="services"></param>
-        public static void AddSwagger(this IServiceCollection services)
+        public static IServiceCollection AddSwagger(this IServiceCollection services)
         {
             var provider = services.BuildServiceProvider();
             var modules = provider.GetService<IModuleCatalog>().Modules.OfType<ManifestModuleInfo>().Where(m => m.ModuleInstance != null).ToArray();
@@ -115,6 +115,7 @@ namespace VirtoCommerce.Platform.Web.Swagger
             //to propagate up to the resulting OpenAPI schema the derived types instead of base domain types
             services.AddSwaggerGenNewtonsoftSupport();
 
+            return services;
         }
 
         /// <summary>
@@ -147,14 +148,14 @@ namespace VirtoCommerce.Platform.Web.Swagger
                 }
                 c.RoutePrefix = "docs";
                 c.EnableValidator();
-                c.IndexStream = () =>
-                {
-                    var type = typeof(Startup).GetTypeInfo().Assembly
-                        .GetManifestResourceStream("VirtoCommerce.Platform.Web.wwwroot.swagger.index.html");
-                    return type;
-                };
+                //c.IndexStream = () =>
+                //{
+                //    var type = typeof(Startup).GetTypeInfo().Assembly
+                //        .GetManifestResourceStream("VirtoCommerce.Platform.Web.wwwroot.swagger.index.html");
+                //    return type;
+                //};
                 c.DocumentTitle = "VirtoCommerce Solution REST API documentation";
-                c.InjectStylesheet("/swagger/vc.css");
+                //c.InjectStylesheet("/swagger/vc.css");
                 c.ShowExtensions();
                 c.DocExpansion(DocExpansion.None);
                 c.DefaultModelsExpandDepth(-1);

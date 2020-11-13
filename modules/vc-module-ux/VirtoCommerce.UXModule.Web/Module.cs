@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -21,8 +22,8 @@ namespace VirtoCommerce.UXModule.Web
 
         public void PostInitialize(IApplicationBuilder app)
         {
-            HostConfiguration.WebRootPath = ModuleInfo.FullPhysicalPath;
-            HostConfiguration.ContentRootPath = HostConfiguration.MapPath("~/Content");
+            HostConfiguration.WebRootPath = Path.Combine(ModuleInfo.FullPhysicalPath, "wwwroot");
+            HostConfiguration.ContentRootPath = HostConfiguration.MapPath("~/");
 
             app.UseStaticFiles(new StaticFileOptions
             {

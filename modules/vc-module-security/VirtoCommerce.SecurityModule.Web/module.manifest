@@ -5,8 +5,7 @@
     <version-tag>v1</version-tag>
     <platformVersion>3.0.0</platformVersion>
     <dependencies>
-        <dependency id="VirtoCommerce.Caching" version="1.0.0" />
-        <dependency id="VirtoCommerce.Events" version="1.0.0" />
+        
     </dependencies>
 
     <title>Security module</title>
