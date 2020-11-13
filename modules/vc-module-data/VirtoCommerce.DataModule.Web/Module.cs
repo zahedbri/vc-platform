@@ -1,6 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VirtoCommerce.DataModule.Data.DynamicProperties;
 using VirtoCommerce.DataModule.Data.Licensing;
@@ -26,7 +27,7 @@ namespace VirtoCommerce.DataModule.Web
 
         public void Initialize(IServiceCollection services)
         {
-            services.AddDbContext<PlatformDbContext>(options => options.UseInMemoryDatabase("VirtoCommerce"));
+            services.AddDbContext<PlatformDbContext>((sp, options) => options.UseSqlServer(sp.GetRequiredService<IConfiguration>().GetConnectionString("VirtoCommerce")));
             services.AddTransient<IPlatformRepository, PlatformRepository>();
             services.AddTransient<Func<IPlatformRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetService<IPlatformRepository>());
 

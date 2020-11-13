@@ -21,7 +21,7 @@ namespace VirtoCommerce.Platform.Web.Extensions
                     pattern: "{controller=Home}/{action=Index}/{id?}");
 
                 
-                if (moduleCatalogs.Modules.Any(x => x.ModuleName.EqualsInvariant("VirtoCommerce.Front")))
+                if (!moduleCatalogs.Modules.Any(x => x.ModuleName.EqualsInvariant("VirtoCommerce.Front")))
                 {
                     endpoints.MapGet("/", async context =>
                     {

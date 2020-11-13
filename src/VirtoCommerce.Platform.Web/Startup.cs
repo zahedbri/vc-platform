@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VirtoCommerce.Platform.App;
 using VirtoCommerce.Platform.App.Extensions;
+using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Modules;
@@ -44,7 +45,8 @@ namespace VirtoCommerce.Platform.Web
             services.AddModules(Configuration, HostConfiguration.IsDevelopment, x => mvcBuilder.AddApplicationPartWithRelatedAssembly(x))
                 .AddIOServices()
                 .AddSwagger()
-                .AddEvents();
+                .AddEvents()
+                .AddCaching(Configuration);
 
             services.AddSignalR().AddPushNotifications(Configuration);
         }

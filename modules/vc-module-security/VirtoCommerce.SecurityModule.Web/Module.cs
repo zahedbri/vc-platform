@@ -1,19 +1,13 @@
 using System;
-using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using VirtoCommerce.Platform.Core.Bus;
-using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
-using VirtoCommerce.Platform.Core.Security.Events;
 using VirtoCommerce.Platform.Core.Security.Search;
-using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Security;
-using VirtoCommerce.Platform.Security.Handlers;
 using VirtoCommerce.Platform.Security.Repositories;
 using VirtoCommerce.Platform.Security.Services;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +17,10 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using VirtoCommerce.SecurityModule.Web.Authentication;
 using AuthorizationOptions = VirtoCommerce.Platform.Core.Security.AuthorizationOptions;
-using OpenIddict.Validation;
 using AspNet.Security.OpenIdConnect.Primitives;
 using VirtoCommerce.Platform.Security.Authorization;
 using VirtoCommerce.SecurityModule.Web.Authorization;
@@ -52,10 +44,9 @@ namespace VirtoCommerce.SecurityModule.Web
             // without this Bearer authorization will not work
             services.AddSingleton<IAuthenticationSchemeProvider, CustomAuthenticationSchemeProvider>();
 
-            services.AddDbContext<SecurityDbContext>(options =>
+            services.AddDbContext<SecurityDbContext>((sp, options) =>
             {
-                //options.UseSqlServer(sp.GetService<IConfiguration>().GetConnectionString("VirtoCommerce"));
-                options.UseInMemoryDatabase(nameof(SecurityDbContext));
+                options.UseSqlServer(sp.GetRequiredService<IConfiguration>().GetConnectionString("VirtoCommerce"));
 
                 // Register the entity sets needed by OpenIddict.
                 // Note: use the generic overload if you need
