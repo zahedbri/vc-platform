@@ -11,6 +11,7 @@ using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Modules;
 using VirtoCommerce.Platform.Modules.Extensions;
+using VirtoCommerce.Platform.Web.Extensions;
 using VirtoCommerce.Platform.Web.Middleware;
 using VirtoCommerce.Platform.Web.PushNotifications;
 using VirtoCommerce.Platform.Web.Swagger;
@@ -59,18 +60,10 @@ namespace VirtoCommerce.Platform.Web
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseCustomizedEndpoints();
 
             app.UseModules();
             app.UseSwagger();
-
-            app.UseEndpoints(routes => routes.MapHub<PushNotificationHub>("/pushNotificationHub"));
 
             //Return all errors as Json response
             app.UseMiddleware<ApiErrorWrappingMiddleware>();

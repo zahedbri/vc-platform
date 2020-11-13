@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <module>
-    <id>VirtoCommerce.PushNotifications</id>
+    <id>VirtoCommerce.Front</id>
     <version>1.0.0</version>
     <version-tag>v1</version-tag>
     <platformVersion>3.0.0</platformVersion>
 
-    <title>PushNotifications module</title>
+    <title>Front module</title>
     <description></description>
     <authors>
         <author>Andrei Kostyrin</author>
@@ -22,6 +22,6 @@
     <copyright>Copyright © 2011-2020 Virto Commerce. All rights reserved</copyright>
     <tags></tags>
 
-    <assemblyFile>VirtoCommerce.PushNotificationsModule.Web.dll</assemblyFile>
-    <moduleType>VirtoCommerce.PushNotificationsModule.Web.Module, VirtoCommerce.PushNotificationsModule.Web</moduleType>
+    <assemblyFile>VirtoCommerce.FrontModule.Web.dll</assemblyFile>
+    <moduleType>VirtoCommerce.FrontModule.Web.Module, VirtoCommerce.FrontModule.Web</moduleType>
 </module>

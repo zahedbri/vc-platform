@@ -4,19 +4,16 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using VirtoCommerce.Platform.Core.Modularity;
-using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.Platform.Web.Swagger
 {
     public class TagsFilter : IOperationFilter
     {
         private readonly IModuleCatalog _moduleCatalog;
-        private readonly ISettingsManager _settingManager;
 
-        public TagsFilter(IModuleCatalog moduleCatalog, ISettingsManager settingManager)
+        public TagsFilter(IModuleCatalog moduleCatalog)
         {
             _moduleCatalog = moduleCatalog;
-            _settingManager = settingManager;
         }
 
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
