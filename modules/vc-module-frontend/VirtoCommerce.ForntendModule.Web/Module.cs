@@ -70,8 +70,6 @@ namespace VirtoCommerce.FrontendModule.Web
             }
 
             app.UseDefaultFiles();
-
-
         }
 
         public void Uninstall()

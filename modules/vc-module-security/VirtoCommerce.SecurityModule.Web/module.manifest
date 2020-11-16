@@ -17,7 +17,7 @@
         <owner>Virto Commerce</owner>
     </owners>
     <groups>
-        <group></group>
+        <group>platform</group>
     </groups>
     <projectUrl></projectUrl>
     <iconUrl></iconUrl>

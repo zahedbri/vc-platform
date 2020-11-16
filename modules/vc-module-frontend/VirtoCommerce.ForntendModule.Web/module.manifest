@@ -16,7 +16,7 @@
     <groups>
         <group>platform</group>
     </groups>
-    <projectUrl></projectUrl>
+    <projectUrl>platform</projectUrl>
     <iconUrl></iconUrl>
     <releaseNotes>First version.</releaseNotes>
     <copyright>Copyright © 2011-2020 Virto Commerce. All rights reserved</copyright>
