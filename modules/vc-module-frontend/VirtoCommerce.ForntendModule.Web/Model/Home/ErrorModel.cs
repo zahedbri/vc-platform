@@ -1,4 +1,4 @@
-namespace VirtoCommerce.Platform.RCL.Model.Home
+namespace VirtoCommerce.FrontendModule.Web.Model.Home
 {
     public class ErrorModel
     {

@@ -10,7 +10,7 @@ using Microsoft.Extensions.FileProviders;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Modularity;
 
-namespace VirtoCommerce.UXModule.Web
+namespace VirtoCommerce.FrontendModule.Web
 {
     public class Module : IModule
     {
@@ -27,7 +27,7 @@ namespace VirtoCommerce.UXModule.Web
 
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(HostConfiguration.ContentRootPath),
+                FileProvider = new PhysicalFileProvider(HostConfiguration.WebRootPath),
                 RequestPath = new PathString("")
             });
 

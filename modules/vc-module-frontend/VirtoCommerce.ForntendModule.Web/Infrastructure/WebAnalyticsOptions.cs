@@ -1,4 +1,4 @@
-namespace VirtoCommerce.Platform.Web.Infrastructure
+namespace VirtoCommerce.FrontendModule.Web.Infrastructure
 {
     public class WebAnalyticsOptions
     {

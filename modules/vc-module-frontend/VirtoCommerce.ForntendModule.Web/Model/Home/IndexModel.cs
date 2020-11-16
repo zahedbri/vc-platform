@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Html;
-using VirtoCommerce.Platform.Web.Infrastructure;
+using VirtoCommerce.FrontendModule.Web.Infrastructure;
 
-namespace VirtoCommerce.Platform.RCL.Model.Home
+namespace VirtoCommerce.FrontendModule.Web.Model.Home
 {
     public class IndexModel
     {

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <module>
-    <id>VirtoCommerce.Front</id>
+    <id>VirtoCommerce.Frontend</id>
     <version>1.0.0</version>
     <version-tag>v1</version-tag>
     <platformVersion>3.0.0</platformVersion>
 
-    <title>Front module</title>
+    <title>Frontend module</title>
     <description></description>
     <authors>
         <author>Andrei Kostyrin</author>
@@ -22,6 +22,6 @@
     <copyright>Copyright © 2011-2020 Virto Commerce. All rights reserved</copyright>
     <tags></tags>
 
-    <assemblyFile>VirtoCommerce.FrontModule.Web.dll</assemblyFile>
-    <moduleType>VirtoCommerce.FrontModule.Web.Module, VirtoCommerce.FrontModule.Web</moduleType>
+    <assemblyFile>VirtoCommerce.FrontendModule.Web.dll</assemblyFile>
+    <moduleType>VirtoCommerce.FrontendModule.Web.Module, VirtoCommerce.FrontendModule.Web</moduleType>
 </module>

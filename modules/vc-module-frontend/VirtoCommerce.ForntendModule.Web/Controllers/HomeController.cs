@@ -7,15 +7,15 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using VirtoCommerce.DataModule.Data.Licensing;
+using VirtoCommerce.FrontendModule.Web.Infrastructure;
+using VirtoCommerce.FrontendModule.Web.Model.Home;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Settings;
-using VirtoCommerce.Platform.RCL.Model.Home;
-using VirtoCommerce.Platform.Web.Infrastructure;
 using static VirtoCommerce.Platform.Core.PlatformConstants.Settings;
 
-namespace VirtoCommerce.UXModule.Web.Controllers
+namespace VirtoCommerce.FrontendModule.Web.Controllers
 {
     public class HomeController : Controller
     {
