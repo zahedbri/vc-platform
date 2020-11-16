@@ -1,4 +1,11 @@
-﻿angular.module('platformWebApp')
+﻿//Call this to register our module to main application
+var moduleTemplateName = "virtoCommerce.assets";
+
+if (AppDependencies !== undefined) {
+    AppDependencies.push(moduleTemplateName);
+}
+
+angular.module(moduleTemplateName, [])
 .config(['$stateProvider', function ($stateProvider) {
     $stateProvider
         .state('workspace.assets', {
@@ -8,7 +15,7 @@
                 var blade = {
                     id: 'assetList',
                     controller: 'platformWebApp.assets.assetListController',
-                    template: '$(Platform)/Scripts/app/assets/blades/asset-list.tpl.html',
+                    template: 'Modules/$(virtoCommerce.Assets)/Scripts/blades/asset-list.tpl.html',
                     isClosingDisabled: true
                 };
                 bladeNavigationService.showBlade(blade);

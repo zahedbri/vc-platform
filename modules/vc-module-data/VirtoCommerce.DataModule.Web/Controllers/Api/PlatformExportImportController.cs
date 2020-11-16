@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Hangfire;
-using Hangfire.Server;
+//using Hangfire;
+//using Hangfire.Server;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
@@ -15,6 +15,7 @@ using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Exceptions;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.ExportImport.PushNotifications;
+using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
@@ -33,6 +34,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
         private readonly ISettingsManager _settingsManager;
         private readonly IUserNameResolver _userNameResolver;
         private readonly PlatformOptions _platformOptions;
+        private readonly IJob _job;
 
         private static readonly object _lockObject = new object();
 
@@ -41,13 +43,15 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
             IPushNotificationManager pushNotifier,
             ISettingsManager settingManager,
             IUserNameResolver userNameResolver,
-            IOptions<PlatformOptions> options)
+            IOptions<PlatformOptions> options,
+            IJob job)
         {
             _platformExportManager = platformExportManager;
             _pushNotifier = pushNotifier;
             _settingsManager = settingManager;
             _userNameResolver = userNameResolver;
             _platformOptions = options.Value;
+            _job = job;
         }
 
         [HttpGet]
@@ -85,7 +89,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
                     _settingsManager.SetValue(PlatformConstants.Settings.Setup.SampleDataState.Name, SampleDataState.Processing);
                     var pushNotification = new SampleDataImportPushNotification(User.Identity.Name);
                     _pushNotifier.Send(pushNotification);
-                    var jobId = BackgroundJob.Enqueue(() => SampleDataImportBackgroundAsync(new Uri(url), pushNotification, JobCancellationToken.Null, null));
+                    var jobId = _job.Enqueue(() => SampleDataImportBackgroundAsync(new Uri(url), pushNotification/*, JobCancellationToken.Null, null*/));
                     pushNotification.JobId = jobId;
 
                     return Ok(pushNotification);
@@ -153,7 +157,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
             };
             _pushNotifier.Send(notification);
 
-            var jobId = BackgroundJob.Enqueue(() => PlatformExportBackgroundAsync(exportRequest, notification, JobCancellationToken.Null, null));
+            var jobId = _job.Enqueue(() => PlatformExportBackgroundAsync(exportRequest, notification/*, JobCancellationToken.Null, null*/));
             notification.JobId = jobId;
             return Ok(notification);
         }
@@ -170,7 +174,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
             };
             _pushNotifier.Send(notification);
 
-            var jobId = BackgroundJob.Enqueue(() => PlatformImportBackgroundAsync(importRequest, notification, JobCancellationToken.Null, null));
+            var jobId = _job.Enqueue(() => PlatformImportBackgroundAsync(importRequest, notification/*, JobCancellationToken.Null, null*/));
             notification.JobId = jobId;
 
             return Ok(notification);
@@ -180,7 +184,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
         [Route("exortimport/tasks/{jobId}/cancel")]
         public ActionResult Cancel([FromRoute] string jobId)
         {
-            BackgroundJob.Delete(jobId);
+            _job.Delete(jobId);
             return Ok();
         }
 
@@ -261,12 +265,12 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
             }
         }
 
-        public async Task SampleDataImportBackgroundAsync(Uri url, SampleDataImportPushNotification pushNotification, IJobCancellationToken cancellationToken, PerformContext context)
+        public async Task SampleDataImportBackgroundAsync(Uri url, SampleDataImportPushNotification pushNotification/*, IJobCancellationToken cancellationToken, PerformContext context*/)
         {
             void progressCallback(ExportImportProgressInfo x)
             {
                 pushNotification.Path(x);
-                pushNotification.JobId = context.BackgroundJob.Id;
+                //pushNotification.JobId = context.BackgroundJob.Id;
                 _pushNotifier.Send(pushNotification);
             }
 
@@ -302,10 +306,10 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
                     }
                 }
             }
-            catch (JobAbortedException)
-            {
-                //do nothing
-            }
+            //catch (JobAbortedException)
+            //{
+            //    //do nothing
+            //}
             catch (Exception ex)
             {
                 pushNotification.Errors.Add(ex.ExpandExceptionMessage());
@@ -319,18 +323,19 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
             }
         }
 
-        public async Task PlatformImportBackgroundAsync(PlatformImportExportRequest importRequest, PlatformImportPushNotification pushNotification, IJobCancellationToken cancellationToken, PerformContext context)
+        public async Task PlatformImportBackgroundAsync(PlatformImportExportRequest importRequest, PlatformImportPushNotification pushNotification/*, IJobCancellationToken cancellationToken, PerformContext context*/)
         {
             void progressCallback(ExportImportProgressInfo x)
             {
                 pushNotification.Path(x);
-                pushNotification.JobId = context.BackgroundJob.Id;
+                //pushNotification.JobId = context.BackgroundJob.Id;
                 _pushNotifier.Send(pushNotification);
             }
 
             var now = DateTime.UtcNow;
             try
             {
+                //TODO
                 //var cancellationTokenWrapper = new JobCancellationTokenWrapper(cancellationToken);
 
                 var uploadFolderFullPath = Path.GetFullPath(_platformOptions.LocalUploadFolderPath);
@@ -350,10 +355,10 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
                     await _platformExportManager.ImportAsync(stream, manifest, progressCallback, null/*cancellationTokenWrapper*/);
                 }
             }
-            catch (JobAbortedException)
-            {
-                //do nothing
-            }
+            //catch (JobAbortedException)
+            //{
+            //    //do nothing
+            //}
             catch (Exception ex)
             {
                 pushNotification.Errors.Add(ex.ExpandExceptionMessage());
@@ -366,12 +371,12 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
             }
         }
 
-        public async Task PlatformExportBackgroundAsync(PlatformImportExportRequest exportRequest, PlatformExportPushNotification pushNotification, IJobCancellationToken cancellationToken, PerformContext context)
+        public async Task PlatformExportBackgroundAsync(PlatformImportExportRequest exportRequest, PlatformExportPushNotification pushNotification/*, IJobCancellationToken cancellationToken, PerformContext context*/)
         {
             void progressCallback(ExportImportProgressInfo x)
             {
                 pushNotification.Path(x);
-                pushNotification.JobId = context.BackgroundJob.Id;
+                //pushNotification.JobId = context.BackgroundJob.Id;
                 _pushNotifier.Send(pushNotification);
             }
 
@@ -399,10 +404,10 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
                     pushNotification.DownloadUrl = $"api/platform/export/download/{fileName}";
                 }
             }
-            catch (JobAbortedException)
-            {
-                //do nothing
-            }
+            //catch (JobAbortedException)
+            //{
+            //    //do nothing
+            //}
             catch (Exception ex)
             {
                 pushNotification.Errors.Add(ex.ExpandExceptionMessage());

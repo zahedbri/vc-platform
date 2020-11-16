@@ -10,7 +10,6 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="Hangfire" Version="1.7.14" />
       <ProjectReference Include="..\..\..\src\VirtoCommerce.Platform.Core\VirtoCommerce.Platform.Core.csproj" />
       <ProjectReference Include="..\VirtoCommerce.DataModule.Data\VirtoCommerce.DataModule.Data.csproj" />
     </ItemGroup>
