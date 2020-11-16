@@ -5,6 +5,24 @@
         <IsPackable>false</IsPackable>
         <noWarn>1591</noWarn>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="Assets\**" />
+      <Compile Remove="IntegrationTests\**" />
+      <Compile Remove="Security\**" />
+      <Compile Remove="UnitTests\**" />
+      <Compile Remove="Validators\**" />
+      <EmbeddedResource Remove="Assets\**" />
+      <EmbeddedResource Remove="IntegrationTests\**" />
+      <EmbeddedResource Remove="Security\**" />
+      <EmbeddedResource Remove="UnitTests\**" />
+      <EmbeddedResource Remove="Validators\**" />
+      <None Remove="Assets\**" />
+      <None Remove="IntegrationTests\**" />
+      <None Remove="Security\**" />
+      <None Remove="UnitTests\**" />
+      <None Remove="Validators\**" />
+    </ItemGroup>
    
     <ItemGroup>
         <PackageReference Include="AutoFixture" Version="4.14.0" />
