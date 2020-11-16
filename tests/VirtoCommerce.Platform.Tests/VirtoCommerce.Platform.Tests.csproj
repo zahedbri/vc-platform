@@ -23,6 +23,11 @@
       <None Remove="UnitTests\**" />
       <None Remove="Validators\**" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Common\MockDbSet.cs" />
+      <Compile Remove="Common\TestAsyncQueryProvider.cs" />
+    </ItemGroup>
    
     <ItemGroup>
         <PackageReference Include="AutoFixture" Version="4.14.0" />
@@ -45,14 +50,14 @@
   
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\VirtoCommerce.Platform.Assets.AzureBlobStorage\VirtoCommerce.Platform.Assets.AzureBlobStorage.csproj" />
-        <ProjectReference Include="..\..\src\VirtoCommerce.Platform.Assets.FileSystem\VirtoCommerce.Platform.Assets.FileSystem.csproj" />
+        <!--<ProjectReference Include="..\..\src\VirtoCommerce.Platform.Assets.AzureBlobStorage\VirtoCommerce.Platform.Assets.AzureBlobStorage.csproj" />
+        <ProjectReference Include="..\..\src\VirtoCommerce.Platform.Assets.FileSystem\VirtoCommerce.Platform.Assets.FileSystem.csproj" />-->
         <ProjectReference Include="..\..\src\VirtoCommerce.Platform.Caching\VirtoCommerce.Platform.Caching.csproj" />
         <ProjectReference Include="..\..\src\VirtoCommerce.Platform.Core\VirtoCommerce.Platform.Core.csproj" />
-        <ProjectReference Include="..\..\src\VirtoCommerce.Platform.Data\VirtoCommerce.Platform.Data.csproj" />
-        <ProjectReference Include="..\..\src\VirtoCommerce.Platform.Hangfire\VirtoCommerce.Platform.Hangfire.csproj" />
+        <!--<ProjectReference Include="..\..\src\VirtoCommerce.Platform.Data\VirtoCommerce.Platform.Data.csproj" />
+        <ProjectReference Include="..\..\src\VirtoCommerce.Platform.Hangfire\VirtoCommerce.Platform.Hangfire.csproj" />-->
         <ProjectReference Include="..\..\src\VirtoCommerce.Platform.Modules\VirtoCommerce.Platform.Modules.csproj" />
-        <ProjectReference Include="..\..\src\VirtoCommerce.Platform.Security\VirtoCommerce.Platform.Security.csproj" />
+        <!--<ProjectReference Include="..\..\src\VirtoCommerce.Platform.Security\VirtoCommerce.Platform.Security.csproj" />-->
         <ProjectReference Include="..\..\src\VirtoCommerce.Platform.Web\VirtoCommerce.Platform.Web.csproj" />
     </ItemGroup>
 
