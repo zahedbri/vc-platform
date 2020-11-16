@@ -10,10 +10,12 @@ using Newtonsoft.Json.Converters;
 using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.JsonConverters;
+using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.TransactionFileManager;
 using VirtoCommerce.Platform.Core.ZipFile;
 using VirtoCommerce.Platform.Modules;
 using VirtoCommerce.Platform.Web.TransactionFileManager;
+using VirtoCommerce.Platform.Web.UserResolver;
 using VirtoCommerce.Platform.Web.ZipFile;
 
 namespace VirtoCommerce.Platform.App.Extensions
@@ -54,6 +56,7 @@ namespace VirtoCommerce.Platform.App.Extensions
                 return JsonSerializer.Create(serv.Value.SerializerSettings);
             });
 
+            services.AddScoped<IUserNameResolver, HttpContextUserResolver>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             return mvcBuilder;

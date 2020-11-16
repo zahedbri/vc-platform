@@ -1,4 +1,4 @@
-namespace VirtoCommerce.DataModule.Data.Constants
+namespace VirtoCommerce.Platform.Web.UserResolver
 {
     public static class DefaultEntityNames
     {
