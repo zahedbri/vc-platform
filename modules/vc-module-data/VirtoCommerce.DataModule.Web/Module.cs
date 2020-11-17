@@ -27,7 +27,8 @@ namespace VirtoCommerce.DataModule.Web
 
         public void Initialize(IServiceCollection services)
         {
-            services.AddDbContext<PlatformDbContext>((sp, options) => options.UseSqlServer(sp.GetRequiredService<IConfiguration>().GetConnectionString("VirtoCommerce")));
+            //services.AddDbContext<PlatformDbContext>((sp, options) => options.UseSqlServer(sp.GetRequiredService<IConfiguration>().GetConnectionString("VirtoCommerce")));
+            services.AddDbContext<PlatformDbContext>((sp, options) => options.UseInMemoryDatabase("VirtoCommerce"));
             services.AddTransient<IPlatformRepository, PlatformRepository>();
             services.AddTransient<Func<IPlatformRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetService<IPlatformRepository>());
 

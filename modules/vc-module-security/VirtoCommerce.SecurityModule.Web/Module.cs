@@ -46,7 +46,8 @@ namespace VirtoCommerce.SecurityModule.Web
 
             services.AddDbContext<SecurityDbContext>((sp, options) =>
             {
-                options.UseSqlServer(sp.GetRequiredService<IConfiguration>().GetConnectionString("VirtoCommerce"));
+                //options.UseSqlServer(sp.GetRequiredService<IConfiguration>().GetConnectionString("VirtoCommerce"));
+                options.UseInMemoryDatabase("VirtoCommerce");
 
                 // Register the entity sets needed by OpenIddict.
                 // Note: use the generic overload if you need
