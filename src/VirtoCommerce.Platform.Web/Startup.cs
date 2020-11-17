@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
+using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +17,7 @@ using VirtoCommerce.Platform.Web.Extensions;
 using VirtoCommerce.Platform.Web.Middleware;
 using VirtoCommerce.Platform.Web.PushNotifications;
 using VirtoCommerce.Platform.Web.Swagger;
+using VirtoCommerce.Platform.Web.Telemetry;
 
 namespace VirtoCommerce.Platform.Web
 {
@@ -48,7 +50,17 @@ namespace VirtoCommerce.Platform.Web
                 .AddEvents()
                 .AddCaching(Configuration);
 
+            // The following line enables Application Insights telemetry collection.
+            services.AddAppInsightsTelemetry(Configuration);
+
             services.AddSignalR().AddPushNotifications(Configuration);
+
+            if (Configuration["VirtoCommerce:ApplicationInsights:EnableLocalSqlCommandTextInstrumentation"]?.ToLower() == "true")
+            {
+                // Next line allows to gather detailed SQL info for AI in the local run.
+                // See instructions here: https://docs.microsoft.com/en-us/azure/azure-monitor/app/asp-net-dependencies#advanced-sql-tracking-to-get-full-sql-query
+                services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, o) => { module.EnableSqlCommandTextInstrumentation = true; });
+            }
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -64,6 +76,8 @@ namespace VirtoCommerce.Platform.Web
             app.UseAuthorization();
             app.UseCustomizedEndpoints();
 
+            // Use app insights telemetry 
+            app.UseAppInsightsTelemetry();
             app.UseModules();
             app.UseSwagger();
 
