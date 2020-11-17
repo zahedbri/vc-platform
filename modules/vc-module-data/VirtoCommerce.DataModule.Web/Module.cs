@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VirtoCommerce.DataModule.Data.DynamicProperties;
+using VirtoCommerce.DataModule.Data.Job;
 using VirtoCommerce.DataModule.Data.Licensing;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.ExportImport;
+using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.Localizations;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Notifications;
@@ -56,7 +58,7 @@ namespace VirtoCommerce.DataModule.Web
 
             services.AddSingleton<LicenseProvider>();
 
-
+            services.AddSingleton<IJob, BackgroundJobWorker>();
             
         }
 
