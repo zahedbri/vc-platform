@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Microsoft.Net.Http.Headers;
 
-namespace VirtoCommerce.Platform.Data.Helpers
+namespace VirtoCommerce.Platform.Core.Helpers
 {
     public static class MultipartRequestHelper
     {

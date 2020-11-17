@@ -5,7 +5,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -16,12 +15,12 @@ using Microsoft.Net.Http.Headers;
 using VirtoCommerce.DataModule.Web.Model.Modularity;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Helpers;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Modularity.PushNotifications;
 using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
-using VirtoCommerce.Platform.Data.Helpers;
 using VirtoCommerce.Platform.Web.Modularity;
 
 namespace VirtoCommerce.DataModule.Web.Controllers.Api
@@ -453,7 +452,9 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
 
             _pushNotifier.Send(notification);
 
-            BackgroundJob.Enqueue(() => ModuleBackgroundJob(options, notification));
+            //TODO
+            //BackgroundJob.Enqueue(() => ModuleBackgroundJob(options, notification));
+            ModuleBackgroundJob(options, notification);
 
             return notification;
         }

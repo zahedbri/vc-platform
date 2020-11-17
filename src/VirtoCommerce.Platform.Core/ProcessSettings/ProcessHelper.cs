@@ -3,9 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using VirtoCommerce.Platform.Core.ProcessSettings;
 
-namespace VirtoCommerce.Platform.Data.Helpers
+namespace VirtoCommerce.Platform.Core.ProcessSettings
 {
     public static class ProcessHelper
     {
@@ -24,13 +23,13 @@ namespace VirtoCommerce.Platform.Data.Helpers
 
         public static byte[] GetOutputAsByteArray(this Process process)
         {
-            byte[] buffer = new byte[32768];
+            var buffer = new byte[32768];
             byte[] file;
             using (var ms = new MemoryStream())
             {
                 while (true)
                 {
-                    int read = process.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
+                    var read = process.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
 
                     if (read <= 0)
                     {
