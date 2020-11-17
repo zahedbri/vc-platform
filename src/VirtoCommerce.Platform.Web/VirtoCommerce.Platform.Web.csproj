@@ -31,6 +31,15 @@
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson" Version="3.1.8" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="3.1.8" />
         <PackageReference Include="Microsoft.Azure.SignalR" Version="1.5.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="certificates\virtocommerce.crt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="certificates\virtocommerce.pfx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>  
 
 </Project>
