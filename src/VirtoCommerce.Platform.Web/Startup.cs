@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Reflection;
-using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -54,13 +53,6 @@ namespace VirtoCommerce.Platform.Web
             services.AddAppInsightsTelemetry(Configuration);
 
             services.AddSignalR().AddPushNotifications(Configuration);
-
-            if (Configuration["VirtoCommerce:ApplicationInsights:EnableLocalSqlCommandTextInstrumentation"]?.ToLower() == "true")
-            {
-                // Next line allows to gather detailed SQL info for AI in the local run.
-                // See instructions here: https://docs.microsoft.com/en-us/azure/azure-monitor/app/asp-net-dependencies#advanced-sql-tracking-to-get-full-sql-query
-                services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, o) => { module.EnableSqlCommandTextInstrumentation = true; });
-            }
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
