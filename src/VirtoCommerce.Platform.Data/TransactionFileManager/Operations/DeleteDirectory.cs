@@ -1,9 +1,8 @@
 using System;
 using System.IO;
 using VirtoCommerce.Platform.Core.TransactionFileManager;
-using VirtoCommerce.Platform.Web.TransactionFileManager;
 
-namespace VirtoCommerce.Platform.Web.TransactionFileManager.Operations
+namespace VirtoCommerce.Platform.Data.TransactionFileManager.Operations
 {
     /// <summary>
     /// Deletes the specified directory and all its contents.
@@ -47,7 +46,7 @@ namespace VirtoCommerce.Platform.Web.TransactionFileManager.Operations
         {
             if (Directory.Exists(backupPath))
             {
-                var parentDirectory = Path.GetDirectoryName(path);
+                string parentDirectory = Path.GetDirectoryName(path);
                 if (!Directory.Exists(parentDirectory))
                 {
                     Directory.CreateDirectory(parentDirectory);
@@ -91,14 +90,14 @@ namespace VirtoCommerce.Platform.Web.TransactionFileManager.Operations
                 destinationDirectory.Create();
             }
 
-            foreach (var sourceFile in sourceDirectory.GetFiles())
+            foreach (FileInfo sourceFile in sourceDirectory.GetFiles())
             {
                 sourceFile.CopyTo(Path.Combine(destinationDirectory.FullName, sourceFile.Name));
             }
 
-            foreach (var sourceSubDirectory in sourceDirectory.GetDirectories())
+            foreach (DirectoryInfo sourceSubDirectory in sourceDirectory.GetDirectories())
             {
-                var destinationSubDirectoryPath = Path.Combine(destinationDirectory.FullName, sourceSubDirectory.Name);
+                string destinationSubDirectoryPath = Path.Combine(destinationDirectory.FullName, sourceSubDirectory.Name);
                 CopyDirectory(sourceSubDirectory, new DirectoryInfo(destinationSubDirectoryPath));
             }
         }

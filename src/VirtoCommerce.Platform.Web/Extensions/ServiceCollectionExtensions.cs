@@ -1,4 +1,3 @@
-using System.IO.Abstractions;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,16 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using VirtoCommerce.Platform.Core.Bus;
-using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.JsonConverters;
 using VirtoCommerce.Platform.Core.Security;
-using VirtoCommerce.Platform.Core.TransactionFileManager;
-using VirtoCommerce.Platform.Core.ZipFile;
 using VirtoCommerce.Platform.Modules;
-using VirtoCommerce.Platform.Web.TransactionFileManager;
 using VirtoCommerce.Platform.Web.UserResolver;
-using VirtoCommerce.Platform.Web.ZipFile;
 
 namespace VirtoCommerce.Platform.App.Extensions
 {
@@ -60,24 +53,6 @@ namespace VirtoCommerce.Platform.App.Extensions
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             return mvcBuilder;
-        }
-
-        public static IServiceCollection AddIOServices(this IServiceCollection services)
-        {
-            services.AddSingleton<ITransactionFileManager, TransactionFileManager>();
-            services.AddSingleton<IFileSystem, FileSystem>();
-            services.AddTransient<IZipFileWrapper, ZipFileWrapper>();
-
-            return services;
-        }
-
-        public static IServiceCollection AddEvents(this IServiceCollection services)
-        {
-            var inProcessBus = new InProcessBus();
-            services.AddSingleton<IHandlerRegistrar>(inProcessBus);
-            services.AddSingleton<IEventPublisher>(inProcessBus);
-
-            return services;
         }
     }
 }

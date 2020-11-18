@@ -7,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VirtoCommerce.Platform.App;
 using VirtoCommerce.Platform.App.Extensions;
-using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Data.Extensions;
 using VirtoCommerce.Platform.Modules;
 using VirtoCommerce.Platform.Modules.Extensions;
 using VirtoCommerce.Platform.Web.Extensions;
@@ -44,10 +44,8 @@ namespace VirtoCommerce.Platform.Web
 
             var mvcBuilder = services.AddCustomizedMvc();
             services.AddModules(Configuration, HostConfiguration.IsDevelopment, x => mvcBuilder.AddApplicationPartWithRelatedAssembly(x))
-                .AddIOServices()
                 .AddSwagger()
-                .AddEvents()
-                .AddCaching(Configuration);
+                .AddPlatformServices(Configuration);
 
             // The following line enables Application Insights telemetry collection.
             services.AddAppInsightsTelemetry(Configuration);
@@ -68,6 +66,7 @@ namespace VirtoCommerce.Platform.Web
             app.UseAuthorization();
             app.UseCustomizedEndpoints();
 
+            app.UseDbTriggers();
             // Use app insights telemetry 
             app.UseAppInsightsTelemetry();
             app.UseModules();

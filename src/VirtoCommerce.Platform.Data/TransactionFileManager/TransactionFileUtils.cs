@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace VirtoCommerce.Platform.Web.TransactionFileManager
+namespace VirtoCommerce.Platform.Data.TransactionFileManager
 {
     static class TransactionFileUtils
     {
@@ -25,8 +25,8 @@ namespace VirtoCommerce.Platform.Web.TransactionFileManager
         /// <returns></returns>
         public static string GetTempFileName(string extension)
         {
-            var g = Guid.NewGuid();
-            var retVal = Path.Combine(tempFolder, g.ToString().Substring(0, 16)) + extension;
+            Guid g = Guid.NewGuid();
+            string retVal = Path.Combine(tempFolder, g.ToString().Substring(0, 16)) + extension;
 
             return retVal;
         }

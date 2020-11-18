@@ -5,7 +5,7 @@ using System.Linq;
 using VirtoCommerce.Platform.Core.TransactionFileManager;
 using VirtoCommerce.Platform.Core.ZipFile;
 
-namespace VirtoCommerce.Platform.Web.ZipFile
+namespace VirtoCommerce.Platform.Data.ZipFile
 {
     public class ZipFileWrapper : IZipFileWrapper
     {
@@ -22,7 +22,7 @@ namespace VirtoCommerce.Platform.Web.ZipFile
         {
             return System.IO.Compression.ZipFile.OpenRead(fileName);
         }
-
+        
         public void Extract(string zipFile, string destinationDir)
         {
             using (var archive = OpenRead(zipFile))

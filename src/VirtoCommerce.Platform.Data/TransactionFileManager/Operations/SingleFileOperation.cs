@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using VirtoCommerce.Platform.Core.TransactionFileManager;
 
-namespace VirtoCommerce.Platform.Web.TransactionFileManager.Operations
+namespace VirtoCommerce.Platform.Data.TransactionFileManager.Operations
 {
     /// <summary>
     /// Class that contains common code for those rollbackable file operations which need
@@ -34,7 +34,7 @@ namespace VirtoCommerce.Platform.Web.TransactionFileManager.Operations
         {
             if (backupPath != null)
             {
-                var directory = Path.GetDirectoryName(path);
+                string directory = Path.GetDirectoryName(path);
                 if (!Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
@@ -68,7 +68,7 @@ namespace VirtoCommerce.Platform.Web.TransactionFileManager.Operations
             {
                 if (backupPath != null)
                 {
-                    var fi = new FileInfo(backupPath);
+                    FileInfo fi = new FileInfo(backupPath);
                     if (fi.IsReadOnly)
                     {
                         fi.Attributes = FileAttributes.Normal;

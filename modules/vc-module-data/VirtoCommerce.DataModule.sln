@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30709.132
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.DataModule.Data", "VirtoCommerce.DataModule.Data\VirtoCommerce.DataModule.Data.csproj", "{E1F540B9-DF19-4C14-A7D5-93C1505B56C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.DataModule.Web", "VirtoCommerce.DataModule.Web\VirtoCommerce.DataModule.Web.csproj", "{F8245AB8-C763-4EC4-81EC-B701B812D31D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E1F540B9-DF19-4C14-A7D5-93C1505B56C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1F540B9-DF19-4C14-A7D5-93C1505B56C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1F540B9-DF19-4C14-A7D5-93C1505B56C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1F540B9-DF19-4C14-A7D5-93C1505B56C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8245AB8-C763-4EC4-81EC-B701B812D31D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8245AB8-C763-4EC4-81EC-B701B812D31D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8245AB8-C763-4EC4-81EC-B701B812D31D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8245AB8-C763-4EC4-81EC-B701B812D31D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {45BF026C-52FA-4832-BFDA-49107417ED88}
+	EndGlobalSection
+EndGlobal

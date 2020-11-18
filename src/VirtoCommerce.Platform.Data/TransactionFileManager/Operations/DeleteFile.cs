@@ -1,7 +1,6 @@
 using System.IO;
-using VirtoCommerce.Platform.Web.TransactionFileManager;
 
-namespace VirtoCommerce.Platform.Web.TransactionFileManager.Operations
+namespace VirtoCommerce.Platform.Data.TransactionFileManager.Operations
 {
     /// <summary>
     /// Rollbackable operation which deletes a file. An exception is not thrown if the file does not exist.
@@ -21,7 +20,7 @@ namespace VirtoCommerce.Platform.Web.TransactionFileManager.Operations
         {
             if (File.Exists(path))
             {
-                var temp = TransactionFileUtils.GetTempFileName(Path.GetExtension(path));
+                string temp = TransactionFileUtils.GetTempFileName(Path.GetExtension(path));
                 TransactionFileUtils.EnsureTempFolderExists();
                 File.Copy(path, temp);
                 backupPath = temp;

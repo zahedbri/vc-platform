@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Transactions;
 using VirtoCommerce.Platform.Core.TransactionFileManager;
 
-namespace VirtoCommerce.Platform.Web.TransactionFileManager
+namespace VirtoCommerce.Platform.Data.TransactionFileManager
 {
     sealed class TransactionFileManagerEnlistment : IEnlistmentNotification
     {
@@ -53,7 +53,7 @@ namespace VirtoCommerce.Platform.Web.TransactionFileManager
             try
             {
                 // Roll back journal items in reverse order
-                for (var i = _journal.Count - 1; i >= 0; i--)
+                for (int i = _journal.Count - 1; i >= 0; i--)
                 {
                     _journal[i].Rollback();
                 }
@@ -71,7 +71,7 @@ namespace VirtoCommerce.Platform.Web.TransactionFileManager
         private void DisposeJournal()
         {
             IDisposable disposable;
-            for (var i = _journal.Count - 1; i >= 0; i--)
+            for (int i = _journal.Count - 1; i >= 0; i--)
             {
                 disposable = _journal[i] as IDisposable;
                 if (disposable != null)

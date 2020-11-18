@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\VirtoCommerce.Platform.Caching\VirtoCommerce.Platform.Caching.csproj" />
     <ProjectReference Include="..\VirtoCommerce.Platform.Core\VirtoCommerce.Platform.Core.csproj" />
+    <ProjectReference Include="..\VirtoCommerce.Platform.Data\VirtoCommerce.Platform.Data.csproj" />
     <ProjectReference Include="..\VirtoCommerce.Platform.Modules\VirtoCommerce.Platform.Modules.csproj" />
   </ItemGroup>
 
@@ -34,12 +35,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="certificates\virtocommerce.crt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="certificates\virtocommerce.pfx">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <EmbeddedResource Include="certificates\virtocommerce.crt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>
+        <EmbeddedResource Include="certificates\virtocommerce.pfx">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </EmbeddedResource>    
     </ItemGroup>  
 
 </Project>
