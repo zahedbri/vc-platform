@@ -18,12 +18,13 @@ namespace VirtoCommerce.FrontendModule.Web
 
         public void Initialize(IServiceCollection services)
         {
+            HostConfiguration.WebRootPath = Path.Combine(ModuleInfo.FullPhysicalPath, "wwwroot");
+            HostConfiguration.ContentRootPath = HostConfiguration.MapPath("~/");
         }
 
         public void PostInitialize(IApplicationBuilder app)
         {
-            HostConfiguration.WebRootPath = Path.Combine(ModuleInfo.FullPhysicalPath, "wwwroot");
-            HostConfiguration.ContentRootPath = HostConfiguration.MapPath("~/");
+            
 
             app.UseStaticFiles(new StaticFileOptions
             {

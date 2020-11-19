@@ -15,7 +15,7 @@
     <ItemGroup>
         <PackageReference Include="EntityFrameworkCore.Triggers" Version="1.2.2" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.9" />
-        <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.1.8" />
+        
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.8" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.8">
           <PrivateAssets>all</PrivateAssets>
@@ -31,6 +31,7 @@
         <PackageReference Include="OpenIddict.Mvc" Version="2.0.1" />
         <PackageReference Include="AspNet.Security.OAuth.Validation" Version="2.0.0" />
         <ProjectReference Include="..\..\..\src\VirtoCommerce.Platform.Core\VirtoCommerce.Platform.Core.csproj" />
+        <ProjectReference Include="..\..\..\src\VirtoCommerce.Platform.Security\VirtoCommerce.Platform.Security.csproj" />
         <ProjectReference Include="..\..\vc-module-data\VirtoCommerce.DataModule.Data\VirtoCommerce.DataModule.Data.csproj" />
     </ItemGroup>
 

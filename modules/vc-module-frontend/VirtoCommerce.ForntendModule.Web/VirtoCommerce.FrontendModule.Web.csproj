@@ -13,4 +13,8 @@
         <ProjectReference Include="..\..\..\src\VirtoCommerce.Platform.Core\VirtoCommerce.Platform.Core.csproj" />
         <ProjectReference Include="..\..\vc-module-data\VirtoCommerce.DataModule.Data\VirtoCommerce.DataModule.Data.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+        <None Include="wwwroot\*" />
+    </ItemGroup>
 </Project>

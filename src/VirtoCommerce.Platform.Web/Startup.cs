@@ -42,10 +42,11 @@ namespace VirtoCommerce.Platform.Web
 
             services.AddOptions<PlatformOptions>().Bind(Configuration.GetSection("VirtoCommerce")).ValidateDataAnnotations();
 
+            services.AddPlatformServices(Configuration);
+
             var mvcBuilder = services.AddCustomizedMvc();
             services.AddModules(Configuration, HostConfiguration.IsDevelopment, x => mvcBuilder.AddApplicationPartWithRelatedAssembly(x))
-                .AddSwagger()
-                .AddPlatformServices(Configuration);
+                .AddSwagger();
 
             // The following line enables Application Insights telemetry collection.
             services.AddAppInsightsTelemetry(Configuration);

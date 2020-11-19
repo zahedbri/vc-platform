@@ -4,6 +4,9 @@
     <version>1.0.0</version>
     <version-tag>v1</version-tag>
     <platformVersion>3.0.0</platformVersion>
+    <dependencies>
+        <dependency id="VirtoCommerce.Frontend" version="1.0.0" />
+    </dependencies>
 
     <title>Assets module</title>
     <description></description>

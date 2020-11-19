@@ -42,8 +42,28 @@ namespace VirtoCommerce.Platform.Modules
             var moduleCatalog = providerSnapshot.GetRequiredService<ILocalModuleCatalog>();
 
             manager.Run();
+
             // Ensure all modules are loaded
-            foreach (var module in moduleCatalog.Modules.OfType<ManifestModuleInfo>().Where(x => x.State == ModuleState.NotStarted).ToArray())
+            foreach (var module in moduleCatalog.Modules
+                .OfType<ManifestModuleInfo>()
+                .Where(x => x.State == ModuleState.NotStarted && x.Groups.Contains("platform"))
+                .ToArray())
+            {
+                manager.LoadModule(module.ModuleName);
+
+                // VP-2190: No need to add parts for modules with laoding errors - it could cause an exception
+                if (module.Assembly != null && module.Errors.IsNullOrEmpty())
+                {
+                    // Register API controller from modules
+                    registerApiControllers?.Invoke(module.Assembly);
+                }
+            }
+
+            // Ensure all modules are loaded
+            foreach (var module in moduleCatalog.Modules
+                .OfType<ManifestModuleInfo>()
+                .Where(x => x.State == ModuleState.NotStarted && !x.Groups.Contains("platform"))
+                .ToArray())
             {
                 manager.LoadModule(module.ModuleName);
 
