@@ -31,6 +31,8 @@ using Microsoft.IdentityModel.Tokens;
 using VirtoCommerce.Platform.Core.Common;
 using Microsoft.AspNetCore.Authentication;
 using VirtoCommerce.Platform.Web.Infrastructure;
+using System.Linq;
+using VirtoCommerce.SecurityModule.Web.Azure;
 
 namespace VirtoCommerce.SecurityModule.Web
 {
@@ -46,8 +48,8 @@ namespace VirtoCommerce.SecurityModule.Web
 
             services.AddDbContext<SecurityDbContext>((sp, options) =>
             {
-                //options.UseSqlServer(sp.GetRequiredService<IConfiguration>().GetConnectionString("VirtoCommerce"));
-                options.UseInMemoryDatabase("VirtoCommerce");
+                options.UseSqlServer(sp.GetRequiredService<IConfiguration>().GetConnectionString("VirtoCommerce"));
+                //options.UseInMemoryDatabase("VirtoCommerce");
 
                 // Register the entity sets needed by OpenIddict.
                 // Note: use the generic overload if you need
@@ -111,6 +113,8 @@ namespace VirtoCommerce.SecurityModule.Web
 
             var webHostEnvironment = providerSnapshot.GetService<IWebHostEnvironment>();
 
+            
+
             AddOpenIdDict(services, configuration, webHostEnvironment);
 
             //always  return 401 instead of 302 for unauthorized  requests
@@ -164,6 +168,28 @@ namespace VirtoCommerce.SecurityModule.Web
                 };
             });
 
+            var azureAdSection = configuration.GetSection("AzureAd");
+
+            if (azureAdSection.GetChildren().Any())
+            {
+                var options = new AzureAdOptions();
+                azureAdSection.Bind(options);
+
+                if (options.Enabled)
+                {
+                    //TODO: Need to check how this influence to OpennIddict Reference tokens activated by this line below  AddValidation(options => options.UseReferenceTokens());
+                    authBuilder.AddOpenIdConnect(options.AuthenticationType, options.AuthenticationCaption,
+                        openIdConnectOptions =>
+                        {
+                            openIdConnectOptions.ClientId = options.ApplicationId;
+                            openIdConnectOptions.Authority = $"{options.AzureAdInstance}{options.TenantId}";
+                            openIdConnectOptions.UseTokenLifetime = true;
+                            openIdConnectOptions.RequireHttpsMetadata = false;
+                            openIdConnectOptions.SignInScheme = IdentityConstants.ExternalScheme;
+                            openIdConnectOptions.SecurityTokenValidator = defaultTokenHandler;
+                        });
+                }
+            }
 
             services.AddAuthorization(options =>
             {

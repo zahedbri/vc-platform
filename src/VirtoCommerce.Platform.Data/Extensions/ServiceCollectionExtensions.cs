@@ -4,11 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Events;
-using VirtoCommerce.Platform.Core.Localizations;
 using VirtoCommerce.Platform.Core.Notifications;
 using VirtoCommerce.Platform.Core.TransactionFileManager;
 using VirtoCommerce.Platform.Core.ZipFile;
-using VirtoCommerce.Platform.Data.Localizations;
 using VirtoCommerce.Platform.Data.ZipFile;
 
 namespace VirtoCommerce.Platform.Data.Extensions
@@ -26,15 +24,10 @@ namespace VirtoCommerce.Platform.Data.Extensions
             services.AddSingleton<ITransactionFileManager, TransactionFileManager.TransactionFileManager>();
 
             services.AddTransient<IEmailSender, DefaultEmailSender>();
-
-            //Register dependencies for translation
-            services.AddSingleton<ITranslationDataProvider, PlatformTranslationDataProvider>();
-            services.AddSingleton<ITranslationDataProvider, ModulesTranslationDataProvider>();
-            services.AddSingleton<ITranslationService, TranslationService>();
-
+            
             services.AddSingleton<IFileSystem, FileSystem>();
             services.AddTransient<IZipFileWrapper, ZipFileWrapper>();
-
+            
             return services;
         }
     }

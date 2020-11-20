@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using VirtoCommerce.Platform.Core.Bus;
+using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Core.Settings.Events;
@@ -46,6 +48,8 @@ namespace VirtoCommerce.HangfireModule.Web
             {
                 services.AddHangfire(config => config.UseMemoryStorage());
             }
+
+            services.Replace(new ServiceDescriptor(typeof(IJobWorker), typeof(HangfireJobWorker), ServiceLifetime.Singleton));
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)

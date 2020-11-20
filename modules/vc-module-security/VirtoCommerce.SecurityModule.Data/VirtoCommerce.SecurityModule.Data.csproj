@@ -31,6 +31,7 @@
         <PackageReference Include="OpenIddict.Mvc" Version="2.0.1" />
         <PackageReference Include="AspNet.Security.OAuth.Validation" Version="2.0.0" />
         <ProjectReference Include="..\..\..\src\VirtoCommerce.Platform.Core\VirtoCommerce.Platform.Core.csproj" />
+        <ProjectReference Include="..\..\..\src\VirtoCommerce.Platform.Data\VirtoCommerce.Platform.Data.csproj" />
         <ProjectReference Include="..\..\..\src\VirtoCommerce.Platform.Security\VirtoCommerce.Platform.Security.csproj" />
         <ProjectReference Include="..\..\vc-module-data\VirtoCommerce.DataModule.Data\VirtoCommerce.DataModule.Data.csproj" />
     </ItemGroup>

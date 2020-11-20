@@ -7,7 +7,7 @@ using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Localizations;
 
-namespace VirtoCommerce.Platform.Data.Localizations
+namespace VirtoCommerce.DataModule.Data.Localizations
 {
     public class TranslationService : ITranslationService
     {

@@ -6,17 +6,16 @@ using Microsoft.Extensions.DependencyInjection;
 using VirtoCommerce.DataModule.Data.DynamicProperties;
 using VirtoCommerce.DataModule.Data.Job;
 using VirtoCommerce.DataModule.Data.Licensing;
+using VirtoCommerce.DataModule.Data.Localizations;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.Localizations;
 using VirtoCommerce.Platform.Core.Modularity;
-using VirtoCommerce.Platform.Core.Notifications;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Data.ChangeLog;
 using VirtoCommerce.Platform.Data.ExportImport;
-using VirtoCommerce.Platform.Data.Localizations;
 using VirtoCommerce.Platform.Data.Repositories;
 using VirtoCommerce.Platform.Data.Settings;
 using static VirtoCommerce.Platform.Core.PlatformConstants.Settings;
@@ -29,8 +28,7 @@ namespace VirtoCommerce.DataModule.Web
 
         public void Initialize(IServiceCollection services)
         {
-            //services.AddDbContext<PlatformDbContext>((sp, options) => options.UseSqlServer(sp.GetRequiredService<IConfiguration>().GetConnectionString("VirtoCommerce")));
-            services.AddDbContext<PlatformDbContext>((sp, options) => options.UseInMemoryDatabase("VirtoCommerce"));
+            services.AddDbContext<PlatformDbContext>((sp, options) => options.UseSqlServer(sp.GetRequiredService<IConfiguration>().GetConnectionString("VirtoCommerce")));
             services.AddTransient<IPlatformRepository, PlatformRepository>();
             services.AddTransient<Func<IPlatformRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetService<IPlatformRepository>());
 
@@ -43,27 +41,30 @@ namespace VirtoCommerce.DataModule.Web
             services.AddTransient<IChangeLogSearchService, ChangeLogSearchService>();
 
             services.AddScoped<IPlatformExportImportManager, PlatformExportImportManager>();
+            
+            services.AddSingleton<IJobWorker, DefaultJobWorker>();
 
-            services.AddTransient<IEmailSender, DefaultEmailSender>();
+            services.AddSingleton<LicenseProvider>();
 
             //Register dependencies for translation
+            services.AddSingleton<ITranslationDataProvider, PlatformTranslationDataProvider>();
+            services.AddSingleton<ITranslationDataProvider, ModulesTranslationDataProvider>();
+            services.AddSingleton<ITranslationService, TranslationService>();
+
             services.AddOptions<TranslationOptions>().Configure(options =>
             {
                 options.PlatformTranslationFolderPath = HostConfiguration.MapPath(options.PlatformTranslationFolderPath);
             });
 
-            services.AddSingleton<ITranslationDataProvider, PlatformTranslationDataProvider>();
-            services.AddSingleton<ITranslationDataProvider, ModulesTranslationDataProvider>();
-            services.AddSingleton<ITranslationService, TranslationService>();
-
-            services.AddSingleton<LicenseProvider>();
-
-            services.AddSingleton<IJob, BackgroundJobWorker>();
-            
         }
 
         public void PostInitialize(IApplicationBuilder app)
         {
+            if (HostConfiguration.IsDevelopment)
+            {
+                app.UseDatabaseErrorPage();
+            }
+
             var settingsRegistrar = app.ApplicationServices.GetRequiredService<ISettingsRegistrar>();
             settingsRegistrar.RegisterSettings(AllSettings, "Platform");
             settingsRegistrar.RegisterSettingsForType(UserProfile.AllSettings, typeof(UserProfile).Name);

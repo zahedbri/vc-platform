@@ -16,6 +16,7 @@ using VirtoCommerce.DataModule.Web.Model.Modularity;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Helpers;
+using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Modularity.PushNotifications;
 using VirtoCommerce.Platform.Core.PushNotifications;
@@ -39,10 +40,11 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
         private readonly IPlatformRestarter _platformRestarter;
         private static readonly object _lockObject = new object();
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
+        private readonly IJobWorker _jobWorker;
 
         public ModulesController(IExternalModuleCatalog externalModuleCatalog, IModuleInstaller moduleInstaller
             , IPushNotificationManager pushNotifier
-            , IUserNameResolver userNameResolver, ISettingsManager settingsManager, IOptions<PlatformOptions> platformOptions, IOptions<ExternalModuleCatalogOptions> externalModuleCatalogOptions, IPlatformRestarter platformRestarter)
+            , IUserNameResolver userNameResolver, ISettingsManager settingsManager, IOptions<PlatformOptions> platformOptions, IOptions<ExternalModuleCatalogOptions> externalModuleCatalogOptions, IPlatformRestarter platformRestarter, IJobWorker jobWorker)
         {
             _externalModuleCatalog = externalModuleCatalog;
             _moduleInstaller = moduleInstaller;
@@ -52,6 +54,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
             _platformOptions = platformOptions.Value;
             _externalModuleCatalogOptions = externalModuleCatalogOptions.Value;
             _platformRestarter = platformRestarter;
+            _jobWorker = jobWorker;
         }
 
         /// <summary>
@@ -454,7 +457,8 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
 
             //TODO
             //BackgroundJob.Enqueue(() => ModuleBackgroundJob(options, notification));
-            ModuleBackgroundJob(options, notification);
+            //ModuleBackgroundJob(options, notification);
+            _jobWorker.Enqueue(() => ModuleBackgroundJob(options, notification));
 
             return notification;
         }

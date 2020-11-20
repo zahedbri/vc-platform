@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using VirtoCommerce.Platform.Core.Localizations;
 using VirtoCommerce.Platform.Core.Modularity;
 
-namespace VirtoCommerce.Platform.Data.Localizations
+namespace VirtoCommerce.DataModule.Data.Localizations
 {
     public class ModulesTranslationDataProvider : FileSystemTranslationDataProvider
     {
@@ -29,7 +29,7 @@ namespace VirtoCommerce.Platform.Data.Localizations
 
                 foreach (var manifest in manifestModules.Where(x => !string.IsNullOrEmpty(x.FullPhysicalPath)))
                 {
-                   yield return Path.Combine(manifest.FullPhysicalPath, _options.ModuleTranslationFolderName);
+                    yield return Path.Combine(manifest.FullPhysicalPath, _options.ModuleTranslationFolderName);
                 }
             }
         }

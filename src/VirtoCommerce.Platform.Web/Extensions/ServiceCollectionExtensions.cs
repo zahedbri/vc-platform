@@ -1,7 +1,9 @@
 using System.Linq;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -9,7 +11,7 @@ using Newtonsoft.Json.Converters;
 using VirtoCommerce.Platform.Core.JsonConverters;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Modules;
-using VirtoCommerce.Platform.Web.UserResolver;
+using VirtoCommerce.Platform.Security;
 
 namespace VirtoCommerce.Platform.App.Extensions
 {
@@ -53,6 +55,30 @@ namespace VirtoCommerce.Platform.App.Extensions
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             return mvcBuilder;
+        }
+
+        public static IServiceCollection ConfigureServer(this IServiceCollection services)
+        {
+            // Enable synchronous IO if using Kestrel:
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
+            // Enable synchronous IO if using IIS:
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            return services;
         }
     }
 }

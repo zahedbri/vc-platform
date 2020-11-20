@@ -52,6 +52,7 @@ namespace VirtoCommerce.Platform.Web
             services.AddAppInsightsTelemetry(Configuration);
 
             services.AddSignalR().AddPushNotifications(Configuration);
+            services.ConfigureServer();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -59,7 +60,21 @@ namespace VirtoCommerce.Platform.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseBrowserLink();                
             }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+            }
+
+            //Return all errors as Json response
+            app.UseMiddleware<ApiErrorWrappingMiddleware>();
+
+            // Engages the forwarded header support in the pipeline  (see description above)
+            app.UseForwardedHeaders();
+
+            app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseCookiePolicy();
@@ -73,8 +88,7 @@ namespace VirtoCommerce.Platform.Web
             app.UseModules();
             app.UseSwagger();
 
-            //Return all errors as Json response
-            app.UseMiddleware<ApiErrorWrappingMiddleware>();
+            
         }
     }
 }

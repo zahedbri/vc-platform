@@ -34,7 +34,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
         private readonly ISettingsManager _settingsManager;
         private readonly IUserNameResolver _userNameResolver;
         private readonly PlatformOptions _platformOptions;
-        private readonly IJob _job;
+        private readonly IJobWorker _job;
 
         private static readonly object _lockObject = new object();
 
@@ -44,7 +44,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
             ISettingsManager settingManager,
             IUserNameResolver userNameResolver,
             IOptions<PlatformOptions> options,
-            IJob job)
+            IJobWorker job)
         {
             _platformExportManager = platformExportManager;
             _pushNotifier = pushNotifier;

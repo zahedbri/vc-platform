@@ -5,7 +5,7 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using VirtoCommerce.Platform.Core.Localizations;
 
-namespace VirtoCommerce.Platform.Data.Localizations
+namespace VirtoCommerce.DataModule.Data.Localizations
 {
     /// <summary>
     /// Intend for load Json localization resources from file system  
@@ -15,7 +15,7 @@ namespace VirtoCommerce.Platform.Data.Localizations
         #region ILocalizationResourceProvider members
         public virtual JObject GetTranslationDataForLanguage(string lang)
         {
-            if(string.IsNullOrEmpty(lang))
+            if (string.IsNullOrEmpty(lang))
             {
                 throw new ArgumentException($"{nameof(lang)} must be set");
             }
@@ -53,9 +53,9 @@ namespace VirtoCommerce.Platform.Data.Localizations
             var result = new JObject();
             foreach (var file in files)
             {
-                if (System.IO.File.Exists(file))
+                if (File.Exists(file))
                 {
-                    var part = JObject.Parse(System.IO.File.ReadAllText(file));
+                    var part = JObject.Parse(File.ReadAllText(file));
                     result.Merge(part, new JsonMergeSettings { MergeArrayHandling = MergeArrayHandling.Merge });
                 }
             }

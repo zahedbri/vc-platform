@@ -2,9 +2,9 @@ using System.Threading;
 using Microsoft.AspNetCore.Http;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
-using static VirtoCommerce.Platform.Web.UserResolver.DefaultEntityNames;
+using static VirtoCommerce.Platform.Data.Constants.DefaultEntityNames;
 
-namespace VirtoCommerce.Platform.Web.UserResolver
+namespace VirtoCommerce.Platform.Security
 {
     public class HttpContextUserResolver : IUserNameResolver
     {
