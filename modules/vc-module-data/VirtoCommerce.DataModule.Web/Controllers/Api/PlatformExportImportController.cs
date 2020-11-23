@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 //using Hangfire;
 //using Hangfire.Server;
@@ -65,12 +66,12 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
         [HttpPost]
         [Route("sampledata/autoinstall")]
         [Authorize(Permissions.PlatformImport)]
-        public ActionResult<SampleDataImportPushNotification> TryToAutoInstallSampleData()
+        public ActionResult<SampleDataImportPushNotification> TryToAutoInstallSampleData(ICancellationToken token)
         {
             var sampleData = InnerDiscoverSampleData().FirstOrDefault(x => !x.Url.IsNullOrEmpty());
             if (sampleData != null)
             {
-                return ImportSampleData(sampleData.Url);
+                return ImportSampleData(token, sampleData.Url);
             }
 
             return Ok();
@@ -79,7 +80,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
         [HttpPost]
         [Route("sampledata/import")]
         [Authorize(Permissions.PlatformImport)]
-        public ActionResult<SampleDataImportPushNotification> ImportSampleData([FromQuery] string url = null)
+        public ActionResult<SampleDataImportPushNotification> ImportSampleData(ICancellationToken token, [FromQuery] string url = null)
         {
             lock (_lockObject)
             {
@@ -89,7 +90,8 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
                     _settingsManager.SetValue(PlatformConstants.Settings.Setup.SampleDataState.Name, SampleDataState.Processing);
                     var pushNotification = new SampleDataImportPushNotification(User.Identity.Name);
                     _pushNotifier.Send(pushNotification);
-                    var jobId = _job.Enqueue(() => SampleDataImportBackgroundAsync(new Uri(url), pushNotification/*, JobCancellationToken.Null, null*/));
+                    //TODO
+                    var jobId = _job.Enqueue(() => SampleDataImportBackgroundAsync(new Uri(url), pushNotification, token));
                     pushNotification.JobId = jobId;
 
                     return Ok(pushNotification);
@@ -148,7 +150,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
         [HttpPost]
         [Route("export")]
         [Authorize(Permissions.PlatformImport)]
-        public ActionResult<PlatformExportPushNotification> ProcessExport([FromBody] PlatformImportExportRequest exportRequest)
+        public ActionResult<PlatformExportPushNotification> ProcessExport([FromBody] PlatformImportExportRequest exportRequest, ICancellationToken token)
         {
             var notification = new PlatformExportPushNotification(_userNameResolver.GetCurrentUserName())
             {
@@ -157,7 +159,8 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
             };
             _pushNotifier.Send(notification);
 
-            var jobId = _job.Enqueue(() => PlatformExportBackgroundAsync(exportRequest, notification/*, JobCancellationToken.Null, null*/));
+            //TODO
+            var jobId = _job.Enqueue(() => PlatformExportBackgroundAsync(exportRequest, notification, token/*null*/));
             notification.JobId = jobId;
             return Ok(notification);
         }
@@ -165,7 +168,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
         [HttpPost]
         [Route("import")]
         [Authorize(Permissions.PlatformImport)]
-        public ActionResult<PlatformImportPushNotification> ProcessImport([FromBody] PlatformImportExportRequest importRequest)
+        public ActionResult<PlatformImportPushNotification> ProcessImport([FromBody] PlatformImportExportRequest importRequest, ICancellationToken token)
         {
             var notification = new PlatformImportPushNotification(_userNameResolver.GetCurrentUserName())
             {
@@ -174,7 +177,8 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
             };
             _pushNotifier.Send(notification);
 
-            var jobId = _job.Enqueue(() => PlatformImportBackgroundAsync(importRequest, notification/*, JobCancellationToken.Null, null*/));
+            //TOD
+            var jobId = _job.Enqueue(() => PlatformImportBackgroundAsync(importRequest, notification, token/*, JobCancellationToken.Null, null*/));
             notification.JobId = jobId;
 
             return Ok(notification);
@@ -265,7 +269,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
             }
         }
 
-        public async Task SampleDataImportBackgroundAsync(Uri url, SampleDataImportPushNotification pushNotification/*, IJobCancellationToken cancellationToken, PerformContext context*/)
+        public async Task SampleDataImportBackgroundAsync(Uri url, SampleDataImportPushNotification pushNotification, ICancellationToken cancellationToken/*, PerformContext context*/)
         {
             void progressCallback(ExportImportProgressInfo x)
             {
@@ -302,7 +306,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
                     var manifest = _platformExportManager.ReadExportManifest(stream);
                     if (manifest != null)
                     {
-                        await _platformExportManager.ImportAsync(stream, manifest, progressCallback, null/*new JobCancellationTokenWrapper(cancellationToken)*/);
+                        await _platformExportManager.ImportAsync(stream, manifest, progressCallback, cancellationToken/*new JobCancellationTokenWrapper(cancellationToken)*/);
                     }
                 }
             }
@@ -323,7 +327,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
             }
         }
 
-        public async Task PlatformImportBackgroundAsync(PlatformImportExportRequest importRequest, PlatformImportPushNotification pushNotification/*, IJobCancellationToken cancellationToken, PerformContext context*/)
+        public async Task PlatformImportBackgroundAsync(PlatformImportExportRequest importRequest, PlatformImportPushNotification pushNotification, ICancellationToken cancellationToken/*, PerformContext context*/)
         {
             void progressCallback(ExportImportProgressInfo x)
             {
@@ -371,7 +375,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
             }
         }
 
-        public async Task PlatformExportBackgroundAsync(PlatformImportExportRequest exportRequest, PlatformExportPushNotification pushNotification/*, IJobCancellationToken cancellationToken, PerformContext context*/)
+        public async Task PlatformExportBackgroundAsync(PlatformImportExportRequest exportRequest, PlatformExportPushNotification pushNotification, ICancellationToken cancellationToken/*, PerformContext context*/)
         {
             void progressCallback(ExportImportProgressInfo x)
             {
@@ -400,7 +404,7 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
                 using (var stream = System.IO.File.OpenWrite(localTmpPath))
                 {
                     var manifest = exportRequest.ToManifest();
-                    await _platformExportManager.ExportAsync(stream, manifest, progressCallback, null/*new JobCancellationTokenWrapper(cancellationToken)*/);
+                    await _platformExportManager.ExportAsync(stream, manifest, progressCallback, cancellationToken);
                     pushNotification.DownloadUrl = $"api/platform/export/download/{fileName}";
                 }
             }

@@ -55,7 +55,6 @@ namespace VirtoCommerce.Platform.Modules
                 {
                     var modulePath = Path.GetDirectoryName(manifestPath);
                     CopyAssemblies(modulePath, _options.ProbingPath);
-                    //CopyPages(modulePath, "Pages");
                 }
 
                 var moduleInfo = AbstractTypeFactory<ManifestModuleInfo>.TryCreateInstance();
@@ -87,7 +86,7 @@ namespace VirtoCommerce.Platform.Modules
                 var passedModules = modules as ModuleInfo[] ?? modules.ToArray();
                 result = base.CompleteListWithDependencies(passedModules).ToArray();
             }
-            catch (MissedModuleException ex)
+            catch (MissedModuleException)
             {
                 // Do not throw if module was missing
                 // Use ValidateDependencyGraph to validate & write and error of module missing
@@ -204,31 +203,6 @@ namespace VirtoCommerce.Platform.Modules
             }
         }
 
-        private void CopyPages(string sourceParentPath, string targetDirectoryPath)
-        {
-            if (sourceParentPath != null)
-            {
-                var sourceDirectoryPath = Path.Combine(sourceParentPath, "");
-
-                if (Directory.Exists(sourceDirectoryPath))
-                {
-                    foreach (var sourceFilePath in Directory.EnumerateFiles(sourceDirectoryPath, "*.cshtml", SearchOption.AllDirectories))
-                    {
-                        // Copy all assembly related files except assemblies that are inlcuded in TPA list
-                        //if (IsAssemblyRelatedFile(sourceFilePath) && !(IsAssemblyFile(sourceFilePath) && TPA.ContainsAssembly(Path.GetFileName(sourceFilePath))))
-                        {
-                            // Copy localization resource files to related subfolders
-                            var targetFilePath = Path.Combine(
-                                IsLocalizationFile(sourceFilePath) ? Path.Combine(targetDirectoryPath, Path.GetFileName(Path.GetDirectoryName(sourceFilePath)))
-                                : targetDirectoryPath,
-                                Path.GetFileName(sourceFilePath));
-                            CopyFile(sourceFilePath, targetFilePath);
-                        }
-                    }
-                }
-            }
-        }
-
         private void CopyFile(string sourceFilePath, string targetFilePath)
         {
             var sourceFileInfo = new FileInfo(sourceFilePath);
@@ -283,11 +257,6 @@ namespace VirtoCommerce.Platform.Modules
         private bool IsLocalizationFile(string path)
         {
             return _options.LocalizationFileExtensions.Any(x => path.EndsWith(x, StringComparison.OrdinalIgnoreCase));
-        }
-
-        private bool IsPageFile(string path)
-        {
-            return new[] { "cshtml" }.Any(x => path.EndsWith(x, StringComparison.OrdinalIgnoreCase));
         }
 
         private static string GetFileAbsoluteUri(string rootPath, string relativePath)

@@ -17,6 +17,7 @@ using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.Platform.Data.ExportImport
 {
+    //TODO
     public class PlatformExportImportManager : IPlatformExportImportManager
     {
         private const string ManifestZipEntryName = "Manifest.json";

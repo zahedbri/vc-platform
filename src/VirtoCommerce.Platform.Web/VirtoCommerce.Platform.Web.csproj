@@ -34,6 +34,7 @@
         <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="3.1.8" />
         <PackageReference Include="Microsoft.Azure.SignalR" Version="1.5.1" />
         <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="3.1.8" />
     </ItemGroup>
 
     <ItemGroup>

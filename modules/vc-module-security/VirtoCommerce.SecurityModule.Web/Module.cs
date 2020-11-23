@@ -33,6 +33,7 @@ using Microsoft.AspNetCore.Authentication;
 using VirtoCommerce.Platform.Web.Infrastructure;
 using System.Linq;
 using VirtoCommerce.SecurityModule.Web.Azure;
+using VirtoCommerce.SecurityModule.Web.Extensions;
 
 namespace VirtoCommerce.SecurityModule.Web
 {
@@ -268,7 +269,7 @@ namespace VirtoCommerce.SecurityModule.Web
                     options.DisableScopeValidation();
 
                     // During development or when you explicitly run the platform in production mode without https, need to disable the HTTPS requirement.
-                    if (webHostEnvironment.IsDevelopment() || platformOptions.AllowInsecureHttp /*|| !Configuration.IsHttpsServerUrlSet()*/)
+                    if (webHostEnvironment.IsDevelopment() || platformOptions.AllowInsecureHttp || !configuration.IsHttpsServerUrlSet())
                     {
                         options.DisableHttpsRequirement();
                     }

@@ -148,6 +148,7 @@ namespace VirtoCommerce.Platform.Web.Swagger
                 }
                 c.RoutePrefix = "docs";
                 c.EnableValidator();
+                //TODO
                 //c.IndexStream = () =>
                 //{
                 //    var type = typeof(Startup).GetTypeInfo().Assembly

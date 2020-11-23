@@ -24,8 +24,6 @@ namespace VirtoCommerce.FrontendModule.Web
 
         public void PostInitialize(IApplicationBuilder app)
         {
-            
-
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(HostConfiguration.WebRootPath),

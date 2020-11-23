@@ -25,10 +25,8 @@ namespace VirtoCommerce.FrontendModule.Web.Controllers
         private readonly LicenseProvider _licenseProvider;
         private readonly ISettingsManager _settingsManager;
 
-        public HomeController(IOptions<PlatformOptions> platformOptions, IOptions<WebAnalyticsOptions> webAnalyticsOptions, IOptions<LocalStorageModuleCatalogOptions> localStorageModuleCatalogOptions
-            , LicenseProvider licenseProvider
-            , ISettingsManager settingsManager
-            )
+        public HomeController(IOptions<PlatformOptions> platformOptions, IOptions<WebAnalyticsOptions> webAnalyticsOptions, IOptions<LocalStorageModuleCatalogOptions> localStorageModuleCatalogOptions,
+            LicenseProvider licenseProvider, ISettingsManager settingsManager)
         {
             _platformOptions = platformOptions.Value;
             _webAnalyticsOptions = webAnalyticsOptions.Value;

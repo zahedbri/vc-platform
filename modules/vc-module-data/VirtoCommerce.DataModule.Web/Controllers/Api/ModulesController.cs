@@ -42,9 +42,9 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
         private readonly IJobWorker _jobWorker;
 
-        public ModulesController(IExternalModuleCatalog externalModuleCatalog, IModuleInstaller moduleInstaller
-            , IPushNotificationManager pushNotifier
-            , IUserNameResolver userNameResolver, ISettingsManager settingsManager, IOptions<PlatformOptions> platformOptions, IOptions<ExternalModuleCatalogOptions> externalModuleCatalogOptions, IPlatformRestarter platformRestarter, IJobWorker jobWorker)
+        public ModulesController(IExternalModuleCatalog externalModuleCatalog, IModuleInstaller moduleInstaller, IPushNotificationManager pushNotifier
+            , IUserNameResolver userNameResolver, ISettingsManager settingsManager, IOptions<PlatformOptions> platformOptions, IOptions<ExternalModuleCatalogOptions> externalModuleCatalogOptions
+            , IPlatformRestarter platformRestarter, IJobWorker jobWorker)
         {
             _externalModuleCatalog = externalModuleCatalog;
             _moduleInstaller = moduleInstaller;
@@ -457,7 +457,6 @@ namespace VirtoCommerce.DataModule.Web.Controllers.Api
 
             //TODO
             //BackgroundJob.Enqueue(() => ModuleBackgroundJob(options, notification));
-            //ModuleBackgroundJob(options, notification);
             _jobWorker.Enqueue(() => ModuleBackgroundJob(options, notification));
 
             return notification;

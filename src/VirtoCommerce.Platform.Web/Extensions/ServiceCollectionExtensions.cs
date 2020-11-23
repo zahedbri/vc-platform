@@ -13,7 +13,7 @@ using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Modules;
 using VirtoCommerce.Platform.Security;
 
-namespace VirtoCommerce.Platform.App.Extensions
+namespace VirtoCommerce.Platform.Web.Extensions
 {
     public static class ServiceCollectionExtensions
     {
