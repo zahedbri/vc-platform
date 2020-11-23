@@ -36,10 +36,10 @@ namespace VirtoCommerce.Platform.Web
             HostConfiguration.ContentRootPath = WebHostEnvironment.ContentRootPath;
             HostConfiguration.IsDevelopment = WebHostEnvironment.IsDevelopment();
 
+            services.AddOptions<PlatformOptions>().Bind(Configuration.GetSection("VirtoCommerce")).ValidateDataAnnotations();
+
             //Get platform version from GetExecutingAssembly
             PlatformVersion.CurrentVersion = SemanticVersion.Parse(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion);
-
-            services.AddOptions<PlatformOptions>().Bind(Configuration.GetSection("VirtoCommerce")).ValidateDataAnnotations();
 
             services.AddPlatformServices(Configuration);
 
