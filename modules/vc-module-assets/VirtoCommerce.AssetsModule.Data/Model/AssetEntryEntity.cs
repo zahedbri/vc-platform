@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 
-namespace VirtoCommerce.Platform.Data.Model
+namespace VirtoCommerce.AssetsModule.Data.Model
 {
     public class AssetEntryEntity : AuditableEntity
     {

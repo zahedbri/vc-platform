@@ -2,7 +2,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace VirtoCommerce.Platform.App
+namespace VirtoCommerce.Platform.Web.Extensions
 {
     public static class MvcBuilderExtensions
     {

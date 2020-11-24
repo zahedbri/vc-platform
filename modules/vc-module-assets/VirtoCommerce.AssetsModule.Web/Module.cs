@@ -1,8 +1,10 @@
 
+using System;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using VirtoCommerce.AssetsModule.Data.Repositories;
 using VirtoCommerce.Platform.Assets.AzureBlobStorage;
 using VirtoCommerce.Platform.Assets.AzureBlobStorage.Extensions;
 using VirtoCommerce.Platform.Assets.FileSystem;
@@ -21,6 +23,10 @@ namespace VirtoCommerce.AssetsModule.Web
         {
             var providerSnapshot = services.BuildServiceProvider();
             var configuration = providerSnapshot.GetService<IConfiguration>();
+
+            services.AddDbContext<AssetDbContext>((sp, options) => options.UseSqlServer(sp.GetRequiredService<IConfiguration>().GetConnectionString("VirtoCommerce")));
+            services.AddTransient<IAssetRepository, AssetRepository>();
+            services.AddTransient<Func<IAssetRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetService<IAssetRepository>());
 
             //Assets
             var assetsProvider = configuration.GetSection("Assets:Provider").Value;
