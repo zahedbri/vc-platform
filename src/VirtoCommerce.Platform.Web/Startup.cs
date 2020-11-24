@@ -50,7 +50,7 @@ namespace VirtoCommerce.Platform.Web
             services.AddAppInsightsTelemetry(Configuration);
 
             services.AddSignalR().AddPushNotifications(Configuration);
-            services.ConfigureServer();
+            services.ConfigureWebServer();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -82,11 +82,9 @@ namespace VirtoCommerce.Platform.Web
 
             app.UseDbTriggers();
             // Use app insights telemetry 
-            app.UseAppInsightsTelemetry();
+            app.UseAppInsightsTelemetry();            
             app.UseModules();
             app.UseSwagger();
-
-            
         }
     }
 }
